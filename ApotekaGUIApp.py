@@ -303,6 +303,12 @@ class windows2(windows1):
 
              Podaci.sacuvaj(self.__podaciUcitaj)
 
+             self.__jmbgTxt.set("")
+             self.__imeTxt.set("")
+             self.__prezimeTxt.set("")
+             self.__lboTxt.set("")
+
+
 
 
 
@@ -451,20 +457,6 @@ class windows2(windows1):
         self.listapacijenata.delete(0, END)
         for pacijent in pacijenti:
             self.listapacijenata.insert(END,  " - "+ format_linije.format(pacijent.prezime, pacijent.ime))
-
-
-
-    def sort(self,pacijenti, event = None):
-        typed = self.e_sorter.get()
-
-        if typed == "":
-            for pacijent in pacijenti:
-                self.listapacijenata.insert(END, "  " + pacijent.prezime + "  " + pacijent.ime)
-        else:
-            self.listapacijenata = []
-            for pacijent in pacijenti:
-                if typed.lower() in pacijenti.lower():
-                   self.listapacijenata.insert(END, "  " + pacijent.prezime + "  |  " + pacijent.ime)
 
 
 class windows3:
@@ -661,6 +653,11 @@ class windows3:
             self.__podaciUcitaj.lekari.append(lekar)
 
             Podaci.sacuvaj(self.__podaciUcitaj)
+
+            self.__jmbgTxt.set("")
+            self.__imeTxt.set("")
+            self.__prezimeTxt.set("")
+            self.__specijalizacijaTxt.set("")
 
             print(lekar)
 
@@ -983,6 +980,13 @@ class windows4:
             self.__podaciUcitaj.lekovi.append(lek)
 
             Podaci.sacuvaj(self.__podaciUcitaj)
+
+            self.__jklTxt.set("")
+            self.__nazivTxt.set("")
+            self.__proizvodjacTxt.set("")
+            self.__tiplekaTxt.set("")
+
+
 
             print(lek)
 
