@@ -253,6 +253,7 @@ class windows2(windows1):
             for pacijent in pacijenti:
                 if typed.lower() in  pacijent.prezime.lower() or typed.lower() in pacijent.ime.lower():
                     data.append(pacijent)
+                    #=========#
 
         self.popuni_proizvodi_listbox(data)
 
