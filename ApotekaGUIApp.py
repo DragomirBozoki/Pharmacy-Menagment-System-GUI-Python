@@ -1299,7 +1299,7 @@ class windows5():
             self.__pacijentTxt.set("")
             self.__imeTxt.set("")
             self.__prezimeTxt.set("")
-            self.__kolicinaInt.set("")
+            self.__kolicinaInt.set(0)
 
             self.b_prihvati_izmenu.config(state = DISABLED)
             self.b_obrisi.config(state= DISABLED)
@@ -1317,10 +1317,13 @@ class windows5():
             duzina2 = self.__prezimeTxt.get()
             duzina3 = self.__kolicinaInt.get()
 
+            if duzina == "" or duzina1 == "" or duzina2 == "":
+                tkinter.messagebox.showwarning("Greska", "Uneli ste prazno polje")
+                return
 
-
-
-
+            if duzina3 <= 0:
+                tkinter.messagebox.showwarning("Greska", "Kolicina mora biti veca od 0")
+                return
 
             recept = Recept(self.__pacijentTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(), self.__datumTxt.get(), self.__kolicinaInt.get())
             self.listapacijenata.insert(END, "  " + recept.pacijent + " \t \t \t " + recept.Lek)
