@@ -30,8 +30,11 @@ class Recept():
     def kolicina(self):
         return self.__kolicina
 
+    def sadrzi(self, pacijent):
+        return pacijent in self.__pacijent
 
-    def __init__(self, pacijent, lek, lekar, datum, kolicina):
+
+    def __init__(self,pacijent, lek, lekar, datum, kolicina):
         self.__pacijent = pacijent
         self.__datum = datum
         self.__lekar = lekar

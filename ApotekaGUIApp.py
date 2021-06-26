@@ -1,7 +1,6 @@
 import time
 from tkinter import *
 import tkinter.messagebox
-from Pacijent import Pacijent
 from Podaci import *
 from tkinter.ttk import Combobox
 
@@ -102,7 +101,7 @@ class windows1:
 
 
 
-class windows2(windows1):
+class windows2():
 
 
     def __init__(self, master, Podaci):
@@ -143,13 +142,20 @@ class windows2(windows1):
         sorterFrame = Frame(self.master, relief = "groove", bg = "whitesmoke")
         sorterFrame.place(x = 500, y = 90, width = 630, height = 50)
 
-        self.e_sorter = Entry(sorterFrame,width = 90,  textvariable = sorterTxt, bd = 2, font = ("arial", 10, "bold"))
+        self.e_sorter = Entry(sorterFrame,width = 90,  textvariable = sorterTxt, bd = 2, font = ("arial", 12, "bold"))
         self.e_sorter.grid(row=2, column=1, pady=10, sticky = "")
 
 
+        self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
+        self.scrollbar.pack(fill=Y)
 
-        self.listapacijenata = Listbox(listboxFrame, bd = 5, relief = "groove",  width = 250,height = 300, font = ("arial", 10, "bold"))
-        self.listapacijenata.grid(column = 0, row = 0)
+        self.listapacijenata = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
+                                font=("arial", 12, "bold"), yscrollcommand=self.scrollbar.set)
+
+        self.scrollbar.config(command=self.listapacijenata.yview)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
+
+        self.listapacijenata.pack()
 
 
 
@@ -158,47 +164,50 @@ class windows2(windows1):
         l_jmbg = Label(pacijentFrame, text="JMBG: ", font=("arial", 10, "bold"))
         l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_jmbg = Entry(pacijentFrame, textvariable= self.__jmbgTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_jmbg = Entry(pacijentFrame, textvariable= self.__jmbgTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_jmbg.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
         l_ime = Label(pacijentFrame, text = "Ime: ", font = ("arial", 10, "bold"))
         l_ime.grid(row = 2, column =  0, pady = 5, padx = 10, sticky = "W")
 
-        self.e_ime = Entry(pacijentFrame, textvariable = self.__imeTxt, bd = 5, font = ("arial",10, "bold"))
+        self.e_ime = Entry(pacijentFrame, textvariable = self.__imeTxt, bd = 5, font = ("arial",12, "bold"), width = 30)
         self.e_ime.grid(row = 2, column = 1,  pady = 5, padx = 10, sticky = "E")
 
         l_prezime = Label(pacijentFrame, text="Prezime: ", font=("arial", 10, "bold"))
         l_prezime.grid(row=3, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_prezime = Entry(pacijentFrame, textvariable= self.__prezimeTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_prezime = Entry(pacijentFrame, textvariable= self.__prezimeTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_prezime.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
         l_datum = Label(pacijentFrame, text="Datum: ", font=("arial", 10, "bold"))
         l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_datum = Entry(pacijentFrame, textvariable=self.__datumTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_datum = Entry(pacijentFrame, textvariable=self.__datumTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="E")
 
         l_lbo = Label(pacijentFrame, text="LBO: ", font=("arial", 10, "bold"))
         l_lbo.grid(row= 5, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_lbo = Entry(pacijentFrame, textvariable = self.__lboTxt ,font=("arial", 10, "bold"), bd =5)
+        self.e_lbo = Entry(pacijentFrame, textvariable = self.__lboTxt ,font=("arial", 12, "bold"), bd =5, width = 30)
         self.e_lbo.grid(row= 5, column=1, pady=5, padx=10, sticky="W")
 
-        self.b_clear = Button(pacijentFrame, text = "Reset", font = ("arial", 10, "bold"), command = self.clear)
-        self.b_clear.grid(row = 7, column = 0, pady = 0, padx = 10)
+        b_clear = Button(pacijentFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
+        b_clear.grid(row=8, column=0, pady=5, padx=10)
 
         self.b_accept = Button(pacijentFrame, text="Accept", font=("arial", 10, "bold"), command=self.accept)
-        self.b_accept.grid(row=7, column=1, pady=0, padx=10)
+        self.b_accept.grid(row=8, column=1, pady=5, padx=0)
 
-        self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"), command = self.izmeni_pacijenta)
-        self.b_izmeni.grid(row=7, column=2, pady=0, padx=10)
+        self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
+                          command=self.izmeni_pacijenta)
+        self.b_izmeni.grid(row=9, column=1, pady=25, padx=10, sticky = "")
 
-        self.b_prihvati_izmenu = Button(pacijentFrame,command = self.prihvati_izmenu, text="Prihvati Izmenu", font=("arial", 10, "bold"), state = DISABLED)
-        self.b_prihvati_izmenu.grid(row =8, column = 2, pady = 15)
+        self.b_prihvati_izmenu = Button(pacijentFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
+                                        font=("arial", 10, "bold"), state=DISABLED)
+        self.b_prihvati_izmenu.grid(row=10, column=1, pady=25)
 
-        self.b_obrisi = Button(pacijentFrame, command=self.izbrisi_komanda, text="Obrisi Pacijenta",font=("arial", 10, "bold"), state=DISABLED)
-        self.b_obrisi.grid(row=10, column=2, pady=15)
+        self.b_obrisi = Button(pacijentFrame, command=self.izbrisi_komanda, text="Obrisi Pacijenta", font=("arial", 10, "bold"),
+                               state=DISABLED)
+        self.b_obrisi.grid(row=11, column=1, pady=25)
 
         jmbg_pLabel = Label(prikazFrame, text = "JMBG: ", font = ("arial", 10, "bold"))
         jmbg_pLabel.grid(row = 0, column = 0, sticky = "E")
@@ -311,7 +320,7 @@ class windows2(windows1):
 
 
 
-
+             print("=================")
              print(pacijent)
 
     def izmeni_pacijenta(self):
@@ -496,62 +505,70 @@ class windows3:
         sorterFrame = Frame(self.master, relief="groove", bg="whitesmoke")
         sorterFrame.place(x=500, y=90, width=630, height=50)
 
-        self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 10, "bold"))
-        self.e_sorter.grid(row=2, column=1, pady=10, sticky="")
+
+        self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 12, "bold"))
+        self.e_sorter.grid(row=3, column=1, pady=0, sticky="")
+
+
+        self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
+        self.scrollbar.pack(fill=Y)
 
         self.listalekara = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
-                                       font=("arial", 10, "bold"))
-        self.listalekara.grid(column=0, row=0)
+                                font=("arial", 12, "bold"), yscrollcommand=self.scrollbar.set)
 
+        self.scrollbar.config(command=self.listalekara.yview)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
+
+        self.listalekara.pack()
         # ====================LABEL===============================
 
         l_jmbg = Label(pacijentFrame, text="JMBG: ", font=("arial", 10, "bold"))
         l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_jmbg = Entry(pacijentFrame, textvariable=self.__jmbgTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_jmbg = Entry(pacijentFrame, textvariable=self.__jmbgTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_jmbg.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
         l_ime = Label(pacijentFrame, text="Ime: ", font=("arial", 10, "bold"))
         l_ime.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_ime = Entry(pacijentFrame, textvariable=self.__imeTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_ime = Entry(pacijentFrame, textvariable=self.__imeTxt, bd=5, font=("arial", 12, "bold"),width = 30)
         self.e_ime.grid(row=2, column=1, pady=5, padx=10, sticky="E")
 
         l_prezime = Label(pacijentFrame, text="Prezime: ", font=("arial", 10, "bold"))
         l_prezime.grid(row=3, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_prezime = Entry(pacijentFrame, textvariable=self.__prezimeTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_prezime = Entry(pacijentFrame, textvariable=self.__prezimeTxt, bd=5, font=("arial", 12, "bold"),width = 30)
         self.e_prezime.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
         l_datum = Label(pacijentFrame, text="Datum: ", font=("arial", 10, "bold"))
         l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_datum = Entry(pacijentFrame, textvariable=self.__datumTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_datum = Entry(pacijentFrame, textvariable=self.__datumTxt, bd=5, font=("arial", 12, "bold"),width = 30)
         self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="E")
 
         l_lbo = Label(pacijentFrame, text="Spec: ", font=("arial", 10, "bold"))
         l_lbo.grid(row=5, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_specijalizacija = Entry(pacijentFrame, textvariable=self.__specijalizacijaTxt, font=("arial", 10, "bold"), bd=5)
+        self.e_specijalizacija = Entry(pacijentFrame, textvariable=self.__specijalizacijaTxt, font=("arial", 12, "bold"), bd=5,width = 30)
         self.e_specijalizacija.grid(row=5, column=1, pady=5, padx=10, sticky="W")
 
         b_clear = Button(pacijentFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
-        b_clear.grid(row=7, column=0, pady=0, padx=10)
+        b_clear.grid(row=8, column=0, pady=5, padx=10)
 
         self.b_accept = Button(pacijentFrame, text="Accept", font=("arial", 10, "bold"), command=self.accept)
-        self.b_accept.grid(row=7, column=1, pady=0, padx=10)
+        self.b_accept.grid(row=8, column=1, pady=5, padx=10)
 
         self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
                           command=self.izmeni_pacijenta)
-        self.b_izmeni.grid(row=7, column=2, pady=0, padx=10)
+        self.b_izmeni.grid(row=9, column=1, pady=25, padx=10)
 
         self.b_prihvati_izmenu = Button(pacijentFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
                                         font=("arial", 10, "bold"), state=DISABLED)
-        self.b_prihvati_izmenu.grid(row=8, column=2, pady=15)
+        self.b_prihvati_izmenu.grid(row=10, column=1, pady=25)
 
         self.b_obrisi = Button(pacijentFrame, command=self.izbrisi_komanda, text="Obrisi Doktora", font=("arial", 10, "bold"),
                                state=DISABLED)
-        self.b_obrisi.grid(row=10, column=2, pady=15)
+        self.b_obrisi.grid(row=11, column=1, pady=25)
 
         jmbg_pLabel = Label(prikazFrame, text="JMBG: ", font=("arial", 10, "bold"))
         jmbg_pLabel.grid(row=0, column=0, sticky="E")
@@ -568,19 +585,19 @@ class windows3:
         lbo_pLabel = Label(prikazFrame, text="Spec: ", font=("arial", 10, "bold"))
         lbo_pLabel.grid(row=4, column=0, sticky="E")
 
-        self.__jmbg_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__jmbg_labela.grid(row=0, column=1)
 
-        self.__ime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__ime_labela.grid(row=1, column=1)
 
-        self.__prezime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__prezime_labela.grid(row=2, column=1)
 
-        self.__datum_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__datum_labela.grid(row=3, column=1)
 
-        self.__lbo_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__lbo_labela.grid(row=4, column=1)
 
         self.listalekara.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
@@ -659,6 +676,7 @@ class windows3:
             self.__prezimeTxt.set("")
             self.__specijalizacijaTxt.set("")
 
+            print("=================")
             print(lekar)
 
     def izmeni_pacijenta(self):
@@ -825,37 +843,53 @@ class windows4:
         sorterFrame = Frame(self.master, relief="groove", bg="whitesmoke")
         sorterFrame.place(x=500, y=90, width=630, height=50)
 
-        self.e_sorter = Entry(sorterFrame, width=90, textvariable=self.__sorterTxt, bd=2, font=("arial", 10, "bold"))
+        self.e_sorter = Entry(sorterFrame, width=90, textvariable=self.__sorterTxt, bd=2, font=("arial", 12, "bold"))
         self.e_sorter.grid(row=2, column=1, pady=10, sticky="")
 
+        self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
+        self.scrollbar.pack(fill=Y)
+
         self.listalek = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
-                                       font=("arial", 10, "bold"))
-        self.listalek.grid(column=0, row=0)
+                                       font=("arial", 12, "bold"), yscrollcommand = self.scrollbar.set)
+
+        self.scrollbar.config(command = self.listalek.yview)
+        self.scrollbar.pack(side = RIGHT, fill = Y)
+
+
+
+        self.listalek.pack()
+
+
+
+
+
+
+
 
         # ====================LABEL===============================
 
         l_jmbg = Label(pacijentFrame, text="JKL: ", font=("arial", 10, "bold"))
         l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_jmbg = Entry(pacijentFrame, textvariable=self.__jklTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_jmbg = Entry(pacijentFrame, textvariable=self.__jklTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_jmbg.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
         l_ime = Label(pacijentFrame, text="Naziv: ", font=("arial", 10, "bold"))
         l_ime.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_ime = Entry(pacijentFrame, textvariable=self.__nazivTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_ime = Entry(pacijentFrame, textvariable=self.__nazivTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_ime.grid(row=2, column=1, pady=5, padx=10, sticky="E")
 
         l_prezime = Label(pacijentFrame, text="Prozivodjac: ", font=("arial", 10, "bold"))
         l_prezime.grid(row=3, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_prezime = Entry(pacijentFrame, textvariable=self.__proizvodjacTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_prezime = Entry(pacijentFrame, textvariable=self.__proizvodjacTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_prezime.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
         l_datum = Label(pacijentFrame, text="Tip Leka: ", font=("arial", 10, "bold"))
         l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_datum = Entry(pacijentFrame, textvariable=self.__tiplekaTxt, bd=5, font=("arial", 10, "bold"))
+        self.e_datum = Entry(pacijentFrame, textvariable=self.__tiplekaTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="E")
 
 
@@ -863,19 +897,19 @@ class windows4:
         b_clear.grid(row=7, column=0, pady=0, padx=10)
 
         self.b_accept = Button(pacijentFrame, text="Accept", font=("arial", 10, "bold"), command=self.accept)
-        self.b_accept.grid(row=7, column=1, pady=0, padx=10)
+        self.b_accept.grid(row=7, column=1, pady=15, padx=10)
 
         self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
                           command=self.izmeni_pacijenta)
-        self.b_izmeni.grid(row=7, column=2, pady=0, padx=10)
+        self.b_izmeni.grid(row=8, column=1, pady=15, padx=10)
 
         self.b_prihvati_izmenu = Button(pacijentFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
                                         font=("arial", 10, "bold"), state=DISABLED)
-        self.b_prihvati_izmenu.grid(row=8, column=2, pady=15)
+        self.b_prihvati_izmenu.grid(row=9, column=1, pady=15)
 
         self.b_obrisi = Button(pacijentFrame, command=self.izbrisi_komanda, text="Obrisi Lek", font=("arial", 10, "bold"),
                                state=DISABLED)
-        self.b_obrisi.grid(row=10, column=2, pady=15)
+        self.b_obrisi.grid(row=10, column=1, pady=15)
 
         jmbg_pLabel = Label(prikazFrame, text="JKL: ", font=("arial", 10, "bold"))
         jmbg_pLabel.grid(row=0, column=0, sticky="E")
@@ -892,28 +926,27 @@ class windows4:
 
 
 
-        self.__jmbg_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__jmbg_labela.grid(row=0, column=1)
 
-        self.__ime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__ime_labela.grid(row=1, column=1)
 
-        self.__prezime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__prezime_labela.grid(row=2, column=1)
 
-        self.__datum_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__datum_labela.grid(row=3, column=1)
 
-        self.__lbo_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__lbo_labela.grid(row=4, column=1)
 
-        self.__izvestaj_labela = Label(prikazFrame, font=('arial', 10, "bold"))
+        self.__izvestaj_labela = Label(prikazFrame, font=('arial', 12, "bold"))
         self.__izvestaj_labela.grid(row=5, column=1)
 
         self.listalek.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
         self.popuni_proizvodi_listbox(self.__podaciUcitaj.lekovi)
-
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
@@ -1146,17 +1179,25 @@ class windows5():
             listboxFrame.place(x=500, y=150, width=630, height=300)
 
             prikazFrame = Frame(self.master, bd=5, relief="groove", bg="whitesmoke")
-            prikazFrame.place(x=500, y=475, width=630, height=150)
+            prikazFrame.place(x=500, y=475, width=630, height=175)
 
             sorterFrame = Frame(self.master, relief="groove", bg="whitesmoke")
             sorterFrame.place(x=500, y=90, width=630, height=50)
 
-            self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 10, "bold"))
+            self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 12, "bold"))
             self.e_sorter.grid(row=2, column=1, pady=10, sticky="")
 
+            
+            self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
+            self.scrollbar.pack(fill=Y)
+
             self.listapacijenata = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
-                                           font=("arial", 10, "bold"))
-            self.listapacijenata.grid(column=0, row=0)
+                                           font=("arial", 12, "bold"), yscrollcommand=self.scrollbar.set)
+
+            self.scrollbar.config(command=self.listapacijenata.yview)
+            self.scrollbar.pack(side=RIGHT, fill=Y)
+
+            self.listapacijenata.pack()
 
             # ====================LABEL===============================
 
@@ -1167,7 +1208,7 @@ class windows5():
             l_jmbg = Label(receptFrame, text="Pacijent: ", font=("arial", 10, "bold"))
             l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_pacijent = Combobox(receptFrame, textvariable=self.__pacijentTxt, font=("arial", 10, "bold"))
+            self.e_pacijent = Combobox(receptFrame, textvariable=self.__pacijentTxt, font=("arial", 12, "bold"))
             self.e_pacijent.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
             pacijenticombo = list()
@@ -1180,7 +1221,7 @@ class windows5():
             l_ime = Label(receptFrame, text="Lekar: ", font=("arial", 10, "bold"))
             l_ime.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_lekar = Combobox(receptFrame,textvariable=self.__prezimeTxt, font=("arial", 10, "bold"))
+            self.e_lekar = Combobox(receptFrame,textvariable=self.__prezimeTxt, font=("arial", 12, "bold"))
             self.e_lekar.grid(row=2, column=1, pady=5, padx=10, sticky="E")
 
             lekarcombo = list()
@@ -1195,7 +1236,7 @@ class windows5():
 
 
 
-            self.e_lekovi = Combobox(receptFrame,textvariable = self.__imeTxt, font=("arial", 10, "bold"))
+            self.e_lekovi = Combobox(receptFrame,textvariable = self.__imeTxt, font=("arial", 12, "bold"))
             self.e_lekovi.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
             lekovicombo = list()
@@ -1207,13 +1248,13 @@ class windows5():
             l_datum = Label(receptFrame, text="Datum: ", font=("arial", 10, "bold"))
             l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_lbo = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 10, "bold"), bd=5)
+            self.e_lbo = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 12, "bold"), bd=5)
             self.e_lbo.grid(row=4, column=1, pady=5, padx=10, sticky="W")
 
             l_lbo = Label(receptFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
             l_lbo.grid(row=5, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_lbo = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 10, "bold"), bd=5)
+            self.e_lbo = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 12, "bold"), bd=5)
             self.e_lbo.grid(row=5, column=1, pady=5, padx=10, sticky="W")
 
             b_clear = Button(receptFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
@@ -1224,15 +1265,15 @@ class windows5():
 
             self.b_izmeni = Button(receptFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
                               command=self.izmeni_pacijenta)
-            self.b_izmeni.grid(row=10, column=2, pady=0, padx=10)
+            self.b_izmeni.grid(row=11, column=1, pady=15, padx=10)
 
             self.b_prihvati_izmenu = Button(receptFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
                                             font=("arial", 10, "bold"), state=DISABLED)
-            self.b_prihvati_izmenu.grid(row=11, column=2, pady=15)
+            self.b_prihvati_izmenu.grid(row=12, column=1, pady=15)
 
             self.b_obrisi = Button(receptFrame, command=self.izbrisi_komanda, text="Obrisi ",
                                    font=("arial", 10, "bold"), state=DISABLED)
-            self.b_obrisi.grid(row=12, column=2, pady=15)
+            self.b_obrisi.grid(row=13, column=1, pady=15)
 
             self.__pacijent_pLabel = Label(prikazFrame, text="Pacijent: ", font=("arial", 10, "bold"))
             self.__pacijent_pLabel.grid(row=0, column=0, sticky="E")
@@ -1257,22 +1298,22 @@ class windows5():
 
             self.popuni_proizvodi_listbox(self.__podaciUcitaj.recepti)
 
-            self.__jmbg_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+            self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__jmbg_labela.grid(row=0, column=1)
 
-            self.__ime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+            self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__ime_labela.grid(row=1, column=1)
 
-            self.__prezime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+            self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__prezime_labela.grid(row=2, column=1)
 
-            self.__datum_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+            self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__datum_labela.grid(row=3, column=1)
 
-            self.__lbo_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+            self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__lbo_labela.grid(row=4, column=1)
 
-            self.__izvestaj_labela = Label(prikazFrame, font = ('arial', 10, "bold"))
+            self.__izvestaj_labela = Label(prikazFrame, font = ('arial', 12, "bold"))
             self.__izvestaj_labela.grid(row = 5, column = 1)
 
             self.e_sorter.bind("<KeyRelease>", self.check)
