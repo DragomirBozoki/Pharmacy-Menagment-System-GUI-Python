@@ -5,8 +5,6 @@ from Podaci import *
 from tkinter.ttk import Combobox
 
 
-
-
 def main():
 
     root = Tk()
@@ -68,30 +66,30 @@ class windows1:
         file_meni = Menu(moj_meni)
         option_meni = Menu(moj_meni)
         moj_meni.add_cascade(label="File", menu=file_meni)
-        moj_meni.add_cascade(label = "Navigate", menu = option_meni)
-        option_meni.add_cascade(label = "Exit", command = self.izlaz)
+        moj_meni.add_cascade(label = "Navigate", menu=option_meni)
+        option_meni.add_cascade(label = "Exit", command=self.izlaz)
         file_meni.add_command(label="Pacijenti", command=self.pacijent_window)
-        file_meni.add_command(label = "Lekari", command = self.lekar_window)
-        file_meni.add_command(label = "Lekovi", command = self.lekovi_window)
-        file_meni.add_command(label = "Prescription", command = self.recepti_window)
+        file_meni.add_command(label = "Lekari", command=self.lekar_window)
+        file_meni.add_command(label = "Lekovi", command=self.lekovi_window)
+        file_meni.add_command(label = "Prescription", command=self.recepti_window)
 
     #===============FUNCTIONS====================================
 
     def pacijent_window(self):
         self.newWindow = Toplevel(self.master)
-        self.app = windows2(self.newWindow, Podaci)
+        self.app = PacijentWindow(self.newWindow, Podaci)
 
     def lekar_window(self):
         self.newWindow = Toplevel(self.master)
-        self.app = windows3(self.newWindow, Podaci)
+        self.app = DoctorWindow(self.newWindow, Podaci)
 
     def lekovi_window(self):
         self.newWindow = Toplevel(self.master)
-        self.app = windows4(self.newWindow, Podaci)
+        self.app = LekWindow(self.newWindow, Podaci)
 
     def recepti_window(self):
         self.newWindow = Toplevel(self.master)
-        self.app = windows5(self.newWindow, Podaci)
+        self.app = ReceptWindow(self.newWindow, Podaci)
 
 
     def izlaz(self):
@@ -101,7 +99,7 @@ class windows1:
 
 
 
-class windows2():
+class PacijentWindow():
 
 
     def __init__(self, master, Podaci):
@@ -468,7 +466,7 @@ class windows2():
             self.listapacijenata.insert(END,  " - "+ format_linije.format(pacijent.prezime, pacijent.ime))
 
 
-class windows3:
+class DoctorWindow:
 
 
     def __init__(self, master, Podaci):
@@ -559,7 +557,7 @@ class windows3:
         self.b_accept.grid(row=8, column=1, pady=5, padx=10)
 
         self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
-                          command=self.izmeni_pacijenta)
+                          command=self.izmeni_lekara)
         self.b_izmeni.grid(row=9, column=1, pady=25, padx=10)
 
         self.b_prihvati_izmenu = Button(pacijentFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
@@ -602,7 +600,7 @@ class windows3:
 
         self.listalekara.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
-        self.popuni_proizvodi_listbox(self.__podaciUcitaj.lekari)
+        self.popuni_listbox(self.__podaciUcitaj.lekari)
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
@@ -622,7 +620,7 @@ class windows3:
                 if typed.lower() in lekar.prezime.lower() or typed.lower() in lekar.ime.lower():
                     data.append(lekar)
 
-        self.popuni_proizvodi_listbox(data)
+        self.popuni_listbox(data)
 
     def clear(self):
         self.__jmbgTxt.set("")
@@ -679,7 +677,7 @@ class windows3:
             print("=================")
             print(lekar)
 
-    def izmeni_pacijenta(self):
+    def izmeni_lekara(self):
 
         if not self.listalekara.curselection():
             tkinter.messagebox.showinfo("Greska", "Niste selektovali pacijenta za izmenu")
@@ -702,11 +700,13 @@ class windows3:
 
     def prihvati_izmenu(self):
 
+
+
         ime = self.__imeTxt.get()
         prezime = self.__prezimeTxt.get()
         datum = self.__datumTxt.get()
         jmbg = self.__jmbgTxt.get()
-        spec = self.__specijalizacijaTxt.get()
+        specijalizacija = self.__specijalizacijaTxt.get()
 
         if len(ime) < 2 or ime.isdigit():
             tkinter.messagebox.showwarning("Greska", "Ime mora imati bar 2 karaktera i ne imati brojeve!")
@@ -715,6 +715,9 @@ class windows3:
         if len(prezime) < 2 or prezime.isdigit():
             tkinter.messagebox.showwarning("Greska", "Prezime mora imati bar 2 karaktera i ne imati brojeve!")
             return
+
+        if len(specijalizacija) < 2 or specijalizacija.isdigit():
+            tkinter.messagebox.showwarning("Greska", "Specijalizacija mora imati bar 2 karaktera i ne sme biti broj!")
 
 
         lekari = self.__podaciUcitaj.lekari
@@ -732,15 +735,17 @@ class windows3:
         lekar_izmena.ime = ime
         lekar_izmena.prezime = prezime
         lekar_izmena.datum = datum
-        lekar_izmena.specijalizacija = spec
+        lekar_izmena.specijalizacija = specijalizacija
 
-        Podaci.sacuvaj(self.__podaciUcitaj)
+
 
         indeks = self.listalekara.curselection()[0]
 
         self.listalekara.delete(indeks)
         self.listalekara.insert(indeks, "  " + lekar_izmena.prezime + "  " + lekar_izmena.ime)
         self.listalekara.selection_set(indeks)
+
+        Podaci.sacuvaj(self.__podaciUcitaj)
 
 
 
@@ -805,12 +810,12 @@ class windows3:
         lekar = self.__podaciUcitaj.lekari[indeks]
         self.popuni_labele(lekar)
 
-    def popuni_proizvodi_listbox(self, lekari):
+    def popuni_listbox(self, lekari):
         self.listalekara.delete(0, END)
         for lekar in lekari:
             self.listalekara.insert(END, "  " + lekar.prezime + "  |  " + lekar.ime)
 
-class windows4:
+class LekWindow:
 
     def __init__(self, master, Podaci):
         self.master = master
@@ -893,7 +898,7 @@ class windows4:
         self.b_accept.grid(row=7, column=1, pady=15, padx=10)
 
         self.b_izmeni = Button(pacijentFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
-                          command=self.izmeni_pacijenta)
+                          command=self.izmeni_lek)
         self.b_izmeni.grid(row=8, column=1, pady=15, padx=10)
 
         self.b_prihvati_izmenu = Button(pacijentFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
@@ -937,7 +942,7 @@ class windows4:
 
         self.listalek.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
-        self.popuni_proizvodi_listbox(self.__podaciUcitaj.lekovi)
+        self.popuni_listbox(self.__podaciUcitaj.lekovi)
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
@@ -957,7 +962,7 @@ class windows4:
                 if typed.lower() in lek.proizvodjac.lower() or typed.lower() in lek.naziv.lower():
                     data.append(lek)
 
-        self.popuni_proizvodi_listbox(data)
+        self.popuni_listbox(data)
 
     def clear(self):
         self.__jklTxt.set("")
@@ -1014,7 +1019,7 @@ class windows4:
 
             print(lek)
 
-    def izmeni_pacijenta(self):
+    def izmeni_lek(self):
 
         if not self.listalek.curselection():
             tkinter.messagebox.showinfo("Greska", "Niste selektovali lek za izmenu")
@@ -1130,7 +1135,7 @@ class windows4:
         lekovi = self.__podaciUcitaj.lekovi[indeks]
         self.popuni_labele(lekovi)
 
-    def popuni_proizvodi_listbox(self, lekovi):
+    def popuni_listbox(self, lekovi):
         self.listalek.delete(0, END)
         for lek in lekovi:
             self.listalek.insert(END, "  " + lek.proizvodjac + "  |  " + lek.naziv)
@@ -1139,7 +1144,7 @@ class windows4:
 
 
 
-class windows5():
+class ReceptWindow():
 
         def __init__(self, master, Podaci):
             self.master = master
@@ -1255,7 +1260,7 @@ class windows5():
             self.b_accept.grid(row=10, column=1, pady=0, padx=10)
 
             self.b_izmeni = Button(receptFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
-                              command=self.izmeni_pacijenta)
+                              command=self.izmeni_recept)
             self.b_izmeni.grid(row=11, column=1, pady=15, padx=10)
 
             self.b_prihvati_izmenu = Button(receptFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
@@ -1287,7 +1292,7 @@ class windows5():
 
             self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
-            self.popuni_proizvodi_listbox(self.__podaciUcitaj.recepti)
+            self.popuni_listbox(self.__podaciUcitaj.recepti)
 
             self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
             self.__jmbg_labela.grid(row=0, column=1)
@@ -1325,7 +1330,7 @@ class windows5():
                     if typed.lower() in recept.pacijent.lower() or typed.lower() in recept.Lek.lower():
                         data.append(recept)
 
-            self.popuni_proizvodi_listbox(data)
+            self.popuni_listbox(data)
 
         def clear(self):
             self.__pacijentTxt.set("")
@@ -1371,7 +1376,7 @@ class windows5():
             self.__prezimeTxt.set("")
             self.__kolicinaInt.set("")
 
-        def izmeni_pacijenta(self):
+        def izmeni_recept(self):
 
             if not self.listapacijenata.curselection():
                 tkinter.messagebox.showinfo("Greska", "Niste selektovali recept za izmenu")
@@ -1479,22 +1484,10 @@ class windows5():
             pacijent = self.__podaciUcitaj.recepti[indeks]
             self.popuni_labele(pacijent)
 
-        def popuni_proizvodi_listbox(self, recepti):
+        def popuni_listbox(self, recepti):
             self.listapacijenata.delete(0, END)
             for recept in recepti:
                 self.listapacijenata.insert(END, "  " + recept.pacijent + " | " + recept.Lek)
-
-        def sort(self, pacijenti, event=None):
-            typed = self.e_sorter.get()
-
-            if typed == "":
-                for pacijent in pacijenti:
-                    self.listapacijenata.insert(END, "  " + pacijent.prezime + "  " + pacijent.ime)
-            else:
-                self.listapacijenata = []
-                for pacijent in pacijenti:
-                    if typed.lower() in pacijenti.lower():
-                        self.listapacijenata.insert(END, "  " + pacijent.prezime + "  " + pacijent.ime)
 
 
 if __name__ == '__main__':
