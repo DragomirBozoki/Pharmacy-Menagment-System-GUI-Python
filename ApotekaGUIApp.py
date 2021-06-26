@@ -225,19 +225,19 @@ class windows2():
         lbo_pLabel.grid(row=4, column=0, sticky = "E")
 
 
-        self.__jmbg_labela = Label(prikazFrame, font = ("arial", 10, "bold"))
+        self.__jmbg_labela = Label(prikazFrame, font = ("arial", 12, "bold"))
         self.__jmbg_labela.grid(row =0 , column = 1)
 
-        self.__ime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__ime_labela.grid(row=1, column=1)
 
-        self.__prezime_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__prezime_labela.grid(row=2, column=1)
 
-        self.__datum_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__datum_labela.grid(row=3, column=1)
 
-        self.__lbo_labela = Label(prikazFrame, font=("arial", 10, "bold"))
+        self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__lbo_labela.grid(row=4, column=1)
 
 
@@ -724,6 +724,7 @@ class windows3:
             if lekar.jmbg == jmbg:
                 lekar_izmena = lekar
                 break
+
         if not self.listalekara.curselection():
             tkinter.messagebox.showinfo("Greska", "Deselektovali ste lekara za izmenu")
             return
@@ -855,15 +856,7 @@ class windows4:
         self.scrollbar.config(command = self.listalek.yview)
         self.scrollbar.pack(side = RIGHT, fill = Y)
 
-
-
         self.listalek.pack()
-
-
-
-
-
-
 
 
         # ====================LABEL===============================
@@ -871,26 +864,26 @@ class windows4:
         l_jmbg = Label(pacijentFrame, text="JKL: ", font=("arial", 10, "bold"))
         l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_jmbg = Entry(pacijentFrame, textvariable=self.__jklTxt, bd=5, font=("arial", 12, "bold"), width = 30)
-        self.e_jmbg.grid(row=1, column=1, pady=5, padx=10, sticky="E")
+        self.e_jkl = Entry(pacijentFrame, textvariable=self.__jklTxt, bd=5, font=("arial", 12, "bold"), width = 30)
+        self.e_jkl.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
         l_ime = Label(pacijentFrame, text="Naziv: ", font=("arial", 10, "bold"))
         l_ime.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_ime = Entry(pacijentFrame, textvariable=self.__nazivTxt, bd=5, font=("arial", 12, "bold"), width = 30)
-        self.e_ime.grid(row=2, column=1, pady=5, padx=10, sticky="E")
+        self.e_naziv = Entry(pacijentFrame, textvariable=self.__nazivTxt, bd=5, font=("arial", 12, "bold"), width = 30)
+        self.e_naziv.grid(row=2, column=1, pady=5, padx=10, sticky="E")
 
         l_prezime = Label(pacijentFrame, text="Prozivodjac: ", font=("arial", 10, "bold"))
         l_prezime.grid(row=3, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_prezime = Entry(pacijentFrame, textvariable=self.__proizvodjacTxt, bd=5, font=("arial", 12, "bold"), width = 30)
-        self.e_prezime.grid(row=3, column=1, pady=5, padx=10, sticky="E")
+        self.e_proizvodjac = Entry(pacijentFrame, textvariable=self.__proizvodjacTxt, bd=5, font=("arial", 12, "bold"), width = 30)
+        self.e_proizvodjac.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
         l_datum = Label(pacijentFrame, text="Tip Leka: ", font=("arial", 10, "bold"))
         l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-        self.e_datum = Entry(pacijentFrame, textvariable=self.__tiplekaTxt, bd=5, font=("arial", 12, "bold"), width = 30)
-        self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="E")
+        self.e_tipLeka = Entry(pacijentFrame, textvariable=self.__tiplekaTxt, bd=5, font=("arial", 12, "bold"), width = 30)
+        self.e_tipLeka.grid(row=4, column=1, pady=5, padx=10, sticky="E")
 
 
         b_clear = Button(pacijentFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
@@ -926,23 +919,21 @@ class windows4:
 
 
 
-        self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__jmbg_labela.grid(row=0, column=1)
+        self.__jkl_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__jkl_labela.grid(row=0, column=1)
 
-        self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__ime_labela.grid(row=1, column=1)
+        self.__naziv_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__naziv_labela.grid(row=1, column=1)
 
-        self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__prezime_labela.grid(row=2, column=1)
+        self.__proizvodjac_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__proizvodjac_labela.grid(row=2, column=1)
 
-        self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__datum_labela.grid(row=3, column=1)
+        self.__tipLeka_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__tipLeka_labela.grid(row=3, column=1)
 
         self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__lbo_labela.grid(row=4, column=1)
 
-        self.__izvestaj_labela = Label(prikazFrame, font=('arial', 12, "bold"))
-        self.__izvestaj_labela.grid(row=5, column=1)
 
         self.listalek.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
@@ -975,7 +966,7 @@ class windows4:
         self.__tiplekaTxt.set("")
 
 
-        self.e_jmbg.config(state="normal")
+        self.e_jkl.config(state="normal")
         self.b_accept.config(state = NORMAL)
         self.b_izmeni.config(state=NORMAL)
         self.b_obrisi.config(state=DISABLED)
@@ -1031,7 +1022,7 @@ class windows4:
         if self.listalek.curselection():
             self.b_prihvati_izmenu['state'] = NORMAL
             self.b_obrisi['state'] = NORMAL
-            self.e_jmbg.config(state=DISABLED)
+            self.e_jkl.config(state=DISABLED)
             self.b_accept['state'] = DISABLED
             lek = self.__podaciUcitaj.lekovi[self.listalek.curselection()[0]]
 
@@ -1078,10 +1069,10 @@ class windows4:
 
         Podaci.sacuvaj(self.__podaciUcitaj)
 
-        self.__jmbg_labela["text"] = lek.jkl
-        self.__ime_labela["text"] = lek.naziv
-        self.__prezime_labela["text"] = lek.proizvodjac
-        self.__datum_labela["text"] = lek.tip_leka
+        self.__jkl_labela["text"] = lek.jkl
+        self.__naziv_labela["text"] = lek.naziv
+        self.__proizvodjac_labela["text"] = lek.proizvodjac
+        self.__tipLeka_labela["text"] = lek.tip_leka
 
         self.listalek.delete(indeks)
         self.listalek.insert(indeks, "  " + lek_izmena.proizvodjac + "  " + lek_izmena.naziv)
@@ -1096,12 +1087,12 @@ class windows4:
         self.b_accept.config(state = NORMAL)
 
     def ocisti_labele(self):
-        self.__jmbg_labela['text'] = ""
-        self.__ime_labela['text'] = ""
-        self.__prezime_labela['text'] = ""
-        self.__datum_labela['text'] = ""
+        self.__jkl_labela['text'] = ""
+        self.__naziv_labela['text'] = ""
+        self.__proizvodjac_labela['text'] = ""
+        self.__tipLeka_labela['text'] = ""
         self.__lbo_labela['text'] = ""
-        self.e_jmbg.config(state="normal")
+        self.e_jkl.config(state="normal")
 
     def izbrisi_komanda(self):
 
@@ -1125,10 +1116,10 @@ class windows4:
         self.listalek.selection_set(lek_izmena)
 
     def popuni_labele(self, lek):
-        self.__jmbg_labela["text"] = lek.jkl
-        self.__ime_labela["text"] = lek.naziv
-        self.__prezime_labela["text"] = lek.proizvodjac
-        self.__datum_labela["text"] = lek.tip_leka
+        self.__jkl_labela["text"] = lek.jkl
+        self.__naziv_labela["text"] = lek.naziv
+        self.__proizvodjac_labela["text"] = lek.proizvodjac
+        self.__tipLeka_labela["text"] = lek.tip_leka
 
     def promena_selekcije_u_listbox(self, event=None):
         if not self.listalek.curselection():
@@ -1205,8 +1196,8 @@ class windows5():
             lekari = self.__podaciUcitaj.lekari
             lekovi = self.__podaciUcitaj.lekovi
 
-            l_jmbg = Label(receptFrame, text="Pacijent: ", font=("arial", 10, "bold"))
-            l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
+            l_pacijent = Label(receptFrame, text="Pacijent: ", font=("arial", 10, "bold"))
+            l_pacijent.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
             self.e_pacijent = Combobox(receptFrame, textvariable=self.__pacijentTxt, font=("arial", 12, "bold"))
             self.e_pacijent.grid(row=1, column=1, pady=5, padx=10, sticky="E")
@@ -1218,8 +1209,8 @@ class windows5():
 
 
 
-            l_ime = Label(receptFrame, text="Lekar: ", font=("arial", 10, "bold"))
-            l_ime.grid(row=2, column=0, pady=5, padx=10, sticky="W")
+            l_lekar = Label(receptFrame, text="Lekar: ", font=("arial", 10, "bold"))
+            l_lekar.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
             self.e_lekar = Combobox(receptFrame,textvariable=self.__prezimeTxt, font=("arial", 12, "bold"))
             self.e_lekar.grid(row=2, column=1, pady=5, padx=10, sticky="E")
@@ -1248,14 +1239,14 @@ class windows5():
             l_datum = Label(receptFrame, text="Datum: ", font=("arial", 10, "bold"))
             l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_lbo = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 12, "bold"), bd=5)
-            self.e_lbo.grid(row=4, column=1, pady=5, padx=10, sticky="W")
+            self.e_datum = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 12, "bold"), bd=5)
+            self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="W")
 
-            l_lbo = Label(receptFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
-            l_lbo.grid(row=5, column=0, pady=5, padx=10, sticky="W")
+            l_kolicina = Label(receptFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
+            l_kolicina.grid(row=5, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_lbo = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 12, "bold"), bd=5)
-            self.e_lbo.grid(row=5, column=1, pady=5, padx=10, sticky="W")
+            self.e_kolicina = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 12, "bold"), bd=5)
+            self.e_kolicina.grid(row=5, column=1, pady=5, padx=10, sticky="W")
 
             b_clear = Button(receptFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
             b_clear.grid(row=10, column=0, pady=0, padx=10)
@@ -1349,7 +1340,7 @@ class windows5():
 
 
             self.e_pacijent.config(state="normal")
-            self.e_lbo.config(state="normal")
+            self.e_kolicina.config(state="normal")
 
         def accept(self):
 
@@ -1455,13 +1446,11 @@ class windows5():
             self.__lbo_labela['text'] = ""
             self.__izvestaj_labela['text'] = ""
             self.e_pacijent.config(state="normal")
-            self.e_lbo.config(state="normal")
+            self.e_kolicina.config(state="normal")
 
         def izbrisi_komanda(self):
-
-            jmbg = self.__pacijentTxt.get()
-
-            if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati pacijenta",
+            
+            if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati recept",
                                            icon='warning') == "no":
                 return
 
