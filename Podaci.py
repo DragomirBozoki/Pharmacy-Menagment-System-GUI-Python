@@ -3,7 +3,7 @@ from Pacijent import Pacijent
 from Lek import Lek
 from Recept import Recept
 import pickle
-import sys
+
 import traceback
 
 class Podaci:

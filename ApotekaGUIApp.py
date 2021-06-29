@@ -207,6 +207,10 @@ class PacijentWindow():
                                state=DISABLED)
         self.b_obrisi.grid(row=11, column=1, pady=25)
 
+        self.b_recepti = Button(pacijentFrame, command=self.prikazi_recepte, text="Recepti", font=("arial", 10, "bold"),
+                               )
+        self.b_recepti.grid(row=12, column=1, pady=25)
+
         jmbg_pLabel = Label(prikazFrame, text = "JMBG: ", font = ("arial", 10, "bold"))
         jmbg_pLabel.grid(row = 0, column = 0, sticky = "E")
 
@@ -224,28 +228,27 @@ class PacijentWindow():
 
 
         self.__jmbg_labela = Label(prikazFrame, font = ("arial", 12, "bold"))
-        self.__jmbg_labela.grid(row =0 , column = 1)
+        self.__jmbg_labela.grid(row =0 , column = 1, sticky = "W")
 
         self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__ime_labela.grid(row=1, column=1)
+        self.__ime_labela.grid(row=1, column=1, sticky = "W")
 
         self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__prezime_labela.grid(row=2, column=1)
+        self.__prezime_labela.grid(row=2, column=1, sticky = "W")
 
         self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__datum_labela.grid(row=3, column=1)
+        self.__datum_labela.grid(row=3, column=1, sticky = "W")
 
         self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__lbo_labela.grid(row=4, column=1)
+        self.__lbo_labela.grid(row=4, column=1, sticky = "W")
 
-
-
+        self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
         self.popuni_listbox(self.__podaciUcitaj.pacijenti)
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
-        self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
+
 
    # ===============Functions=======================
 
@@ -263,7 +266,17 @@ class PacijentWindow():
                 if typed.lower() in  pacijent.prezime.lower() or typed.lower() in pacijent.ime.lower():
                     data.append(pacijent)
                     #=========#
+
+
         self.popuni_listbox(data)
+        self.listapacijenata.selection_clear(0, END)
+        self.listapacijenata.selection_set(END)
+
+        indeks = self.listapacijenata.curselection()[0]
+        pacijent = data[indeks]
+        self.popuni_labele(pacijent)
+
+        return data
 
     def clear(self):
         self.__jmbgTxt.set("")
@@ -478,6 +491,71 @@ class PacijentWindow():
         for pacijent in pacijenti:
             self.listapacijenata.insert(END,  " - "+ format_linije.format(pacijent.prezime, pacijent.ime))
 
+    def prikazi_recepte(self):
+        if not self.listapacijenata.curselection():
+            tkinter.messagebox.showwarning("Greska", "Niste selektovali pacijenta")
+            return
+
+
+        indeks = self.listapacijenata.curselection()[0]
+        pacijenti = self.__podaciUcitaj.pacijenti
+        pacijent = pacijenti[indeks]
+
+
+        list = []
+        for recept in self.__podaciUcitaj.recepti:
+            if pacijent == recept.Pacijent:
+                list.append(recept)
+
+
+
+        recept_pacijent_prozor = Toplevel(self.master)
+        recept_pacijent_prozor.title("Recepti")
+
+        self.__listarecepti = Listbox(recept_pacijent_prozor,width = 50, activestyle = "none", exportselection = False)
+        self.__listarecepti.pack(side=LEFT, fill=BOTH, expand=1)
+        self.__listarecepti.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
+
+        label_frame = Frame(recept_pacijent_prozor, bd = 5, relief = "ridge", padx = 10, pady = 5)
+        label_frame.pack(side = RIGHT, fill=BOTH, expand = 1)
+
+        self.__datum = Label(label_frame)
+        self.__izvestaj = Label(label_frame)
+        self.__kolicina = Label(label_frame)
+        self.__pacijent = Label(label_frame)
+        self.__lekar = Label(label_frame)
+        self.__lek = Label(label_frame)
+
+        Label(label_frame, text = "Pacijent").grid(row = 0, column =2, sticky =E)
+        Label(label_frame, text="Lek").grid(row=1, column=2, sticky=E)
+        Label(label_frame, text="Lekar").grid(row=2, column=2, sticky=E)
+        Label(label_frame, text="Datum:").grid(row=3, column=2, sticky=E)
+        Label(label_frame, text="Kolicina").grid(row=4, column=2, sticky=E)
+        Label(label_frame, text="Izvestaj").grid(row=5, column=2, sticky=E)
+
+        self.__pacijent.grid(row = 0, column =3 , sticky = W)
+        self.__lekar.grid(row=1, column=3, sticky=W)
+        self.__lek.grid(row=2, column=3, sticky=W)
+        self.__datum.grid(row=3, column=3, sticky=W)
+        self.__kolicina.grid(row=4, column=3, sticky=W)
+        self.__izvestaj.grid(row=5, column=3, sticky=W)
+
+
+
+        for recept in list:
+
+            self.__listarecepti.insert(END, recept.Pacijent + "  " + recept.Lek)
+            self.__pacijent["text"] = recept.Pacijent
+            self.__lekar["text"] = recept.Lek
+            self.__lek["text"] = recept.Lekar
+            self.__datum["text"] = recept.datum
+            self.__izvestaj['text'] = recept.izvestaj
+
+        print(list)
+
+
+
+
 
 class DoctorWindow:
 
@@ -597,19 +675,19 @@ class DoctorWindow:
         lbo_pLabel.grid(row=4, column=0, sticky="E")
 
         self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__jmbg_labela.grid(row=0, column=1)
+        self.__jmbg_labela.grid(row=0, column=1, sticky = "W")
 
         self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__ime_labela.grid(row=1, column=1)
+        self.__ime_labela.grid(row=1, column=1, sticky = "W")
 
         self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__prezime_labela.grid(row=2, column=1)
+        self.__prezime_labela.grid(row=2, column=1, sticky = "W")
 
         self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__datum_labela.grid(row=3, column=1)
+        self.__datum_labela.grid(row=3, column=1, sticky = "W")
 
         self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__lbo_labela.grid(row=4, column=1)
+        self.__lbo_labela.grid(row=4, column=1, sticky = "W")
 
         self.listalekara.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
@@ -947,19 +1025,19 @@ class LekWindow:
 
 
         self.__jkl_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__jkl_labela.grid(row=0, column=1)
+        self.__jkl_labela.grid(row=0, column=1, sticky = "W")
 
         self.__naziv_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__naziv_labela.grid(row=1, column=1)
+        self.__naziv_labela.grid(row=1, column=1, sticky = "W")
 
         self.__proizvodjac_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__proizvodjac_labela.grid(row=2, column=1)
+        self.__proizvodjac_labela.grid(row=2, column=1, sticky = "W")
 
         self.__tipLeka_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__tipLeka_labela.grid(row=3, column=1)
+        self.__tipLeka_labela.grid(row=3, column=1, sticky = "W")
 
         self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-        self.__lbo_labela.grid(row=4, column=1)
+        self.__lbo_labela.grid(row=4, column=1, sticky = "W")
 
 
         self.listalek.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
@@ -1167,354 +1245,343 @@ class LekWindow:
         for lek in lekovi:
             self.listalek.insert(END, "  " + lek.proizvodjac + "  |  " + lek.naziv)
 
-
-
-
-
 class ReceptWindow():
 
-        def __init__(self, master, Podaci):
-            self.master = master
-            self.master.title("Prescription Menagment System")
-            self.master.geometry("1350x750+0+0")
-            self.frame = Frame(self.master)
-            self.frame.pack()
+    def __init__(self, master, Podaci):
+        self.master = master
+        self.master.title("Prescription Menagment System")
+        self.master.geometry("1350x750+0+0")
+        self.frame = Frame(self.master)
+        self.frame.pack()
 
-            self.__pacijentTxt = StringVar()
-            self.__imeTxt = StringVar()
-            self.__prezimeTxt = StringVar()
-            self.__kolicinaInt = IntVar()
-            sorterTxt = StringVar()
-            self.__datumTxt = StringVar()
-            self.__datumTxt.set(time.strftime("%d.%m.%Y. %H:%M:%S"))
+        self.__pacijentTxt = StringVar()
+        self.__imeTxt = StringVar()
+        self.__prezimeTxt = StringVar()
+        self.__kolicinaInt = IntVar()
+        sorterTxt = StringVar()
+        self.__datumTxt = StringVar()
+        self.__datumTxt.set(time.strftime("%d.%m.%Y. %H:%M:%S"))
 
-            Label(self.frame, text="Prescription Menagment System", font=("arial", 15, "bold")).grid(row=0, column=0)
+        Label(self.frame, text="Prescription Menagment System", font=("arial", 15, "bold")).grid(row=0, column=0)
 
-            self.__podaci = Podaci()
-            self.__podaciUcitaj = Podaci.ucitaj()
+        self.__podaci = Podaci()
+        self.__podaciUcitaj = Podaci.ucitaj()
 
-            # =================Frames==========================
+        # =================Frames==========================
 
-            receptFrame = Frame(self.master, bd=4, relief="groove", bg="whitesmoke")
-            receptFrame.place(x=20, y=40, width=450, height=630)
+        receptFrame = Frame(self.master, bd=4, relief="groove", bg="whitesmoke")
+        receptFrame.place(x=20, y=40, width=450, height=630)
 
-            listboxFrame = Frame(self.master, bd=0, relief="groove", bg="whitesmoke")
-            listboxFrame.place(x=500, y=150, width=630, height=300)
+        listboxFrame = Frame(self.master, bd=0, relief="groove", bg="whitesmoke")
+        listboxFrame.place(x=500, y=150, width=630, height=300)
 
-            prikazFrame = Frame(self.master, bd=5, relief="groove", bg="whitesmoke")
-            prikazFrame.place(x=500, y=475, width=630, height=175)
+        prikazFrame = Frame(self.master, bd=5, relief="groove", bg="whitesmoke")
+        prikazFrame.place(x=500, y=475, width=630, height=175)
 
-            sorterFrame = Frame(self.master, relief="groove", bg="whitesmoke")
-            sorterFrame.place(x=500, y=90, width=630, height=50)
+        sorterFrame = Frame(self.master, relief="groove", bg="whitesmoke")
+        sorterFrame.place(x=500, y=90, width=630, height=50)
 
-            self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 12, "bold"))
-            self.e_sorter.grid(row=2, column=1, pady=10, sticky="")
+        self.e_sorter = Entry(sorterFrame, width=90, textvariable=sorterTxt, bd=2, font=("arial", 12, "bold"))
+        self.e_sorter.grid(row=2, column=1, pady=10, sticky="")
 
-            
-            self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
-            self.scrollbar.pack(fill=Y)
+        self.scrollbar = Scrollbar(listboxFrame, orient=VERTICAL)
+        self.scrollbar.pack(fill=Y)
 
-            self.listapacijenata = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
-                                           font=("arial", 12, "bold"), yscrollcommand=self.scrollbar.set)
+        self.listapacijenata = Listbox(listboxFrame, bd=5, relief="groove", width=250, height=300,
+                                       font=("arial", 12, "bold"), yscrollcommand=self.scrollbar.set)
 
-            self.scrollbar.config(command=self.listapacijenata.yview)
-            self.scrollbar.pack(side=RIGHT, fill=Y)
+        self.scrollbar.config(command=self.listapacijenata.yview)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
 
-            self.listapacijenata.pack()
+        self.listapacijenata.pack()
 
-            # ====================LABEL===============================
+        # ====================LABEL===============================
 
-            pacijenti = self.__podaciUcitaj.pacijenti
-            lekari = self.__podaciUcitaj.lekari
-            lekovi = self.__podaciUcitaj.lekovi
+        pacijenti = self.__podaciUcitaj.pacijenti
+        lekari = self.__podaciUcitaj.lekari
+        lekovi = self.__podaciUcitaj.lekovi
 
-            l_pacijent = Label(receptFrame, text="Pacijent: ", font=("arial", 10, "bold"))
-            l_pacijent.grid(row=1, column=0, pady=5, padx=10, sticky="W")
+        l_pacijent = Label(receptFrame, text="Pacijent: ", font=("arial", 10, "bold"))
+        l_pacijent.grid(row=1, column=0, pady=5, padx=10, sticky="W")
 
-            self.e_pacijent = Combobox(receptFrame, textvariable=self.__pacijentTxt, font=("arial", 12, "bold"))
-            self.e_pacijent.grid(row=1, column=1, pady=5, padx=10, sticky="E")
+        self.e_pacijent = Combobox(receptFrame, textvariable=self.__pacijentTxt, font=("arial", 12, "bold"))
+        self.e_pacijent.grid(row=1, column=1, pady=5, padx=10, sticky="E")
 
-            pacijenticombo = list()
-            for pacijent in pacijenti:
-                pacijenticombo.append(pacijent.prezime + " " + pacijent.ime)
-            self.e_pacijent['values'] = pacijenticombo
+        pacijenticombo = list()
+        for pacijent in pacijenti:
+            pacijenticombo.append(pacijent.prezime + " " + pacijent.ime)
+        self.e_pacijent['values'] = pacijenticombo
 
+        l_lekar = Label(receptFrame, text="Lekar: ", font=("arial", 10, "bold"))
+        l_lekar.grid(row=2, column=0, pady=5, padx=10, sticky="W")
 
+        self.e_lekar = Combobox(receptFrame, textvariable=self.__prezimeTxt, font=("arial", 12, "bold"))
+        self.e_lekar.grid(row=2, column=1, pady=5, padx=10, sticky="E")
 
-            l_lekar = Label(receptFrame, text="Lekar: ", font=("arial", 10, "bold"))
-            l_lekar.grid(row=2, column=0, pady=5, padx=10, sticky="W")
+        lekarcombo = list()
+        for lekar in lekari:
+            lekarcombo.append(lekar.prezime + " " + lekar.ime)
+        self.e_lekar['values'] = lekarcombo
 
-            self.e_lekar = Combobox(receptFrame,textvariable=self.__prezimeTxt, font=("arial", 12, "bold"))
-            self.e_lekar.grid(row=2, column=1, pady=5, padx=10, sticky="E")
+        l_lek = Label(receptFrame, text="Lek: ", font=("arial", 10, "bold"))
+        l_lek.grid(row=3, column=0, pady=5, padx=10, sticky="W")
 
-            lekarcombo = list()
-            for lekar in lekari:
-                lekarcombo.append(lekar.prezime + " " + lekar.ime)
-            self.e_lekar['values'] = lekarcombo
+        self.e_lekovi = Combobox(receptFrame, textvariable=self.__imeTxt, font=("arial", 12, "bold"))
+        self.e_lekovi.grid(row=3, column=1, pady=5, padx=10, sticky="E")
 
+        lekovicombo = list()
+        for lek in lekovi:
+            lekovicombo.append(lek.proizvodjac + " " + lek.naziv)
+        self.e_lekovi['values'] = lekovicombo
 
+        l_datum = Label(receptFrame, text="Datum: ", font=("arial", 10, "bold"))
+        l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
 
-            l_lek = Label(receptFrame, text="Lek: ", font=("arial", 10, "bold"))
-            l_lek.grid(row=3, column=0, pady=5, padx=10, sticky="W")
+        self.e_datum = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 12, "bold"), bd=5)
+        self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="W")
 
+        l_kolicina = Label(receptFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
+        l_kolicina.grid(row=5, column=0, pady=5, padx=10, sticky="W")
 
+        self.e_kolicina = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 12, "bold"), bd=5)
+        self.e_kolicina.grid(row=5, column=1, pady=5, padx=10, sticky="W")
 
-            self.e_lekovi = Combobox(receptFrame,textvariable = self.__imeTxt, font=("arial", 12, "bold"))
-            self.e_lekovi.grid(row=3, column=1, pady=5, padx=10, sticky="E")
+        b_clear = Button(receptFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
+        b_clear.grid(row=10, column=0, pady=0, padx=10)
 
-            lekovicombo = list()
-            for lek in lekovi:
-                lekovicombo.append(lek.proizvodjac + " " + lek.naziv)
-            self.e_lekovi['values'] = lekovicombo
+        self.b_accept = Button(receptFrame, text="Accept", font=("arial", 10, "bold"), command=self.accept)
+        self.b_accept.grid(row=10, column=1, pady=0, padx=10)
 
+        self.b_izmeni = Button(receptFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
+                               command=self.izmeni_recept)
+        self.b_izmeni.grid(row=11, column=1, pady=15, padx=10)
 
-            l_datum = Label(receptFrame, text="Datum: ", font=("arial", 10, "bold"))
-            l_datum.grid(row=4, column=0, pady=5, padx=10, sticky="W")
+        self.b_prihvati_izmenu = Button(receptFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
+                                        font=("arial", 10, "bold"), state=DISABLED)
+        self.b_prihvati_izmenu.grid(row=12, column=1, pady=15)
 
-            self.e_datum = Entry(receptFrame, textvariable=self.__datumTxt, font=("arial", 12, "bold"), bd=5)
-            self.e_datum.grid(row=4, column=1, pady=5, padx=10, sticky="W")
+        self.b_obrisi = Button(receptFrame, command=self.izbrisi_komanda, text="Obrisi ",
+                               font=("arial", 10, "bold"), state=DISABLED)
+        self.b_obrisi.grid(row=13, column=1, pady=15)
 
-            l_kolicina = Label(receptFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
-            l_kolicina.grid(row=5, column=0, pady=5, padx=10, sticky="W")
+        self.__pacijent_pLabel = Label(prikazFrame, text="Pacijent: ", font=("arial", 10, "bold"))
+        self.__pacijent_pLabel.grid(row=0, column=0, sticky="E")
 
-            self.e_kolicina = Entry(receptFrame, textvariable=self.__kolicinaInt, font=("arial", 12, "bold"), bd=5)
-            self.e_kolicina.grid(row=5, column=1, pady=5, padx=10, sticky="W")
+        self.__lekar_pLabel = Label(prikazFrame, text="Lek: ", font=("arial", 10, "bold"))
+        self.__lekar_pLabel.grid(row=1, column=0, sticky="E")
 
-            b_clear = Button(receptFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
-            b_clear.grid(row=10, column=0, pady=0, padx=10)
+        self.__lek_pLabel = Label(prikazFrame, text="Lekar: ", font=("arial", 10, "bold"))
+        self.__lek_pLabel.grid(row=2, column=0, sticky="E")
 
-            self.b_accept = Button(receptFrame, text="Accept", font=("arial", 10, "bold"), command=self.accept)
-            self.b_accept.grid(row=10, column=1, pady=0, padx=10)
+        self.__datum_pLabel = Label(prikazFrame, text="Datum: ", font=("arial", 10, "bold"))
+        self.__datum_pLabel.grid(row=3, column=0, sticky="E")
 
-            self.b_izmeni = Button(receptFrame, text="Izmeni/Obrisi", font=("arial", 10, "bold"),
-                              command=self.izmeni_recept)
-            self.b_izmeni.grid(row=11, column=1, pady=15, padx=10)
+        self.__kolicina_pLabel = Label(prikazFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
+        self.__kolicina_pLabel.grid(row=4, column=0, sticky="E")
 
-            self.b_prihvati_izmenu = Button(receptFrame, command=self.prihvati_izmenu, text="Prihvati Izmenu",
-                                            font=("arial", 10, "bold"), state=DISABLED)
-            self.b_prihvati_izmenu.grid(row=12, column=1, pady=15)
+        self.__izvestaj_pLabel = Label(prikazFrame, text="Izvestaj: ", font=("arial", 10, "bold"))
+        self.__izvestaj_pLabel.grid(row=5, column=0, sticky="E")
 
-            self.b_obrisi = Button(receptFrame, command=self.izbrisi_komanda, text="Obrisi ",
-                                   font=("arial", 10, "bold"), state=DISABLED)
-            self.b_obrisi.grid(row=13, column=1, pady=15)
+        self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
-            self.__pacijent_pLabel = Label(prikazFrame, text="Pacijent: ", font=("arial", 10, "bold"))
-            self.__pacijent_pLabel.grid(row=0, column=0, sticky="E")
+        self.popuni_listbox(self.__podaciUcitaj.recepti)
 
-            self.__lekar_pLabel = Label(prikazFrame, text="Lek: ", font=("arial", 10, "bold"))
-            self.__lekar_pLabel.grid(row=1, column=0, sticky="E")
+        self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__jmbg_labela.grid(row=0, column=1, sticky = "W")
 
-            self.__lek_pLabel = Label(prikazFrame, text="Lekar: ", font=("arial", 10, "bold"))
-            self.__lek_pLabel.grid(row=2, column=0, sticky="E")
+        self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__ime_labela.grid(row=1, column=1, sticky = "W")
 
-            self.__datum_pLabel = Label(prikazFrame, text="Datum: ", font=("arial", 10, "bold"))
-            self.__datum_pLabel.grid(row=3, column=0, sticky="E")
+        self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__prezime_labela.grid(row=2, column=1, sticky = "W")
 
-            self.__kolicina_pLabel = Label(prikazFrame, text="Kolicina(mg): ", font=("arial", 10, "bold"))
-            self.__kolicina_pLabel.grid(row=4, column=0, sticky="E")
+        self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__datum_labela.grid(row=3, column=1, sticky = "W")
 
-            self.__izvestaj_pLabel = Label(prikazFrame, text = "Izvestaj: ", font = ("arial", 10, "bold"))
-            self.__izvestaj_pLabel.grid(row = 5, column = 0 , sticky = "E")
+        self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
+        self.__lbo_labela.grid(row=4, column=1, sticky = "W")
 
+        self.__izvestaj_labela = Label(prikazFrame, font=('arial', 12, "bold"))
+        self.__izvestaj_labela.grid(row=5, column=1, sticky = "W")
 
-            self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
-
-            self.popuni_listbox(self.__podaciUcitaj.recepti)
-
-            self.__jmbg_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-            self.__jmbg_labela.grid(row=0, column=1)
-
-            self.__ime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-            self.__ime_labela.grid(row=1, column=1)
-
-            self.__prezime_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-            self.__prezime_labela.grid(row=2, column=1)
-
-            self.__datum_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-            self.__datum_labela.grid(row=3, column=1)
-
-            self.__lbo_labela = Label(prikazFrame, font=("arial", 12, "bold"))
-            self.__lbo_labela.grid(row=4, column=1)
-
-            self.__izvestaj_labela = Label(prikazFrame, font = ('arial', 12, "bold"))
-            self.__izvestaj_labela.grid(row = 5, column = 1)
-
-            self.e_sorter.bind("<KeyRelease>", self.check)
+        self.e_sorter.bind("<KeyRelease>", self.check)
 
         # ===============Functions=======================
 
-        def check(self, event=None):
+    def check(self, event=None):
 
-            typed = self.e_sorter.get()
+        typed = self.e_sorter.get()
 
-            recepti = self.__podaciUcitaj.recepti
+        recepti = self.__podaciUcitaj.recepti
 
-            if typed == "":
-                data = recepti
-            else:
-                data = []
-                for recept in recepti:
-                    if typed.lower() in recept.pacijent.lower() or typed.lower() in recept.Lek.lower():
-                        data.append(recept)
-
-            self.popuni_listbox(data)
-
-        def clear(self):
-            self.__pacijentTxt.set("")
-            self.__imeTxt.set("")
-            self.__prezimeTxt.set("")
-            self.__kolicinaInt.set(0)
-
-            self.b_prihvati_izmenu.config(state = DISABLED)
-            self.b_obrisi.config(state= DISABLED)
-            self.b_accept.config(state = NORMAL)
-
-
-
-            self.e_pacijent.config(state="normal")
-            self.e_kolicina.config(state="normal")
-
-        def accept(self):
-
-            duzina = self.__pacijentTxt.get()
-            duzina1 = self.__imeTxt.get()
-            duzina2 = self.__prezimeTxt.get()
-            duzina3 = self.__kolicinaInt.get()
-
-            if duzina == "" or duzina1 == "" or duzina2 == "":
-                tkinter.messagebox.showwarning("Greska", "Uneli ste prazno polje")
-                return
-
-            if duzina3 <= 0:
-                tkinter.messagebox.showwarning("Greska", "Kolicina mora biti veca od 0")
-                return
-
-            recept = Recept(self.__pacijentTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(), self.__datumTxt.get(), self.__kolicinaInt.get())
-            self.listapacijenata.insert(END, "  " + recept.pacijent + " \t \t \t " + recept.Lek)
-
-            self.__podaciUcitaj.recepti.append(recept)
-
-            Podaci.sacuvaj(self.__podaciUcitaj)
-
-            print(recept)
-
-            self.__pacijentTxt.set("")
-            self.__imeTxt.set("")
-            self.__prezimeTxt.set("")
-            self.__kolicinaInt.set("")
-
-        def izmeni_recept(self):
-
-            if not self.listapacijenata.curselection():
-                tkinter.messagebox.showinfo("Greska", "Niste selektovali recept za izmenu")
-                return
-            if self.listapacijenata.curselection():
-                self.b_prihvati_izmenu['state'] = NORMAL
-                self.b_obrisi['state'] = NORMAL
-                self.e_pacijent.config(state=DISABLED)
-                self.b_accept.config(state= DISABLED)
-                recept = self.__podaciUcitaj.recepti[self.listapacijenata.curselection()[0]]
-
-                self.__pacijentTxt.set(recept.pacijent)
-                self.__imeTxt.set(recept.Lek)
-                self.__prezimeTxt.set(recept.Lekar)
-                self.__datumTxt.set(recept.datum)
-                self.__kolicinaInt.set(recept.kolicina)
-
-        def prihvati_izmenu(self):
-
-            ime = self.__imeTxt.get()
-            prezime = self.__prezimeTxt.get()
-            datum = self.__datumTxt.get()
-            jmbg = self.__pacijentTxt.get()
-
-            if len(ime) < 2 or ime.isdigit():
-                tkinter.messagebox.showwarning("Greska", "Ime mora imati bar 2 karaktera i ne imati brojeve!")
-                return
-
-            if len(prezime) < 2 or prezime.isdigit():
-                tkinter.messagebox.showwarning("Greska", "Prezime mora imati bar 2 karaktera i ne imati brojeve!")
-                return
-
-            recepti = self.__podaciUcitaj.recepti
-
+        if typed == "":
+            data = recepti
+        else:
+            data = []
             for recept in recepti:
+                if typed.lower() in recept.Pacijent.lower() or typed.lower() in recept.Lek.lower():
+                    data.append(recept)
 
-                if recept.pacijent == jmbg:
-                    pacijent_izmena = recept
-                    break
+        self.popuni_listbox(data)
 
-            pacijent_izmena.ime = ime
-            pacijent_izmena.prezime = prezime
-            pacijent_izmena.datum = datum
+    def clear(self):
+        self.__pacijentTxt.set("")
+        self.__imeTxt.set("")
+        self.__prezimeTxt.set("")
+        self.__kolicinaInt.set(0)
+
+        self.b_prihvati_izmenu.config(state=DISABLED)
+        self.b_obrisi.config(state=DISABLED)
+        self.b_accept.config(state=NORMAL)
+
+        self.e_pacijent.config(state="normal")
+        self.e_kolicina.config(state="normal")
+
+    def accept(self):
+
+        duzina = self.__pacijentTxt.get()
+        duzina1 = self.__imeTxt.get()
+        duzina2 = self.__prezimeTxt.get()
+        duzina3 = self.__kolicinaInt.get()
+
+        if duzina == "" or duzina1 == "" or duzina2 == "":
+            tkinter.messagebox.showwarning("Greska", "Uneli ste prazno polje")
+            return
+
+        if duzina3 <= 0:
+            tkinter.messagebox.showwarning("Greska", "Kolicina mora biti veca od 0")
+            return
+
+        recept = Recept(self.__pacijentTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(), self.__datumTxt.get(),
+                        self.__kolicinaInt.get())
+        self.listapacijenata.insert(END, "  " + recept.Pacijent + " \t \t \t " + recept.Lek)
+
+        self.__podaciUcitaj.recepti.append(recept)
+
+        Podaci.sacuvaj(self.__podaciUcitaj)
+
+        print(recept)
+
+        self.__pacijentTxt.set("")
+        self.__imeTxt.set("")
+        self.__prezimeTxt.set("")
+        self.__kolicinaInt.set("")
+
+    def izmeni_recept(self):
+
+        if not self.listapacijenata.curselection():
+            tkinter.messagebox.showinfo("Greska", "Niste selektovali recept za izmenu")
+            return
+        if self.listapacijenata.curselection():
+            self.b_prihvati_izmenu['state'] = NORMAL
+            self.b_obrisi['state'] = NORMAL
+            self.e_pacijent.config(state=DISABLED)
+            self.b_accept.config(state=DISABLED)
+            recept = self.__podaciUcitaj.recepti[self.listapacijenata.curselection()[0]]
+
+            self.__pacijentTxt.set(recept.Pacijent)
+            self.__imeTxt.set(recept.Lek)
+            self.__prezimeTxt.set(recept.Lekar)
+            self.__datumTxt.set(recept.datum)
+            self.__kolicinaInt.set(recept.kolicina)
+
+    def prihvati_izmenu(self):
+
+        ime = self.__imeTxt.get()
+        prezime = self.__prezimeTxt.get()
+        datum = self.__datumTxt.get()
+        jmbg = self.__pacijentTxt.get()
+
+        indeks = self.listapacijenata.curselection()
+        self.listapacijenata.selection_set(indeks)
+
+        if len(ime) < 2 or ime.isdigit():
+            tkinter.messagebox.showwarning("Greska", "Ime mora imati bar 2 karaktera i ne imati brojeve!")
+            return
+
+        if len(prezime) < 2 or prezime.isdigit():
+            tkinter.messagebox.showwarning("Greska", "Prezime mora imati bar 2 karaktera i ne imati brojeve!")
+            return
+
+        recepti = self.__podaciUcitaj.recepti
+
+        for recept in recepti:
+
+            if recept.pacijent == jmbg:
+                pacijent_izmena = recept
+                break
 
 
-            indeks = self.listapacijenata.curselection()[0]
+        pacijent_izmena.ime = ime
+        pacijent_izmena.prezime = prezime
+        pacijent_izmena.datum = datum
 
-            Podaci.sacuvaj(self.__podaciUcitaj)
+        indeks = self.listapacijenata.curselection()[0]
 
-            self.__jmbg_labela["text"] = recept.pacijent
-            self.__ime_labela["text"] = recept.Lek
-            self.__prezime_labela["text"] = recept.Lekar
-            self.__datum_labela["text"] = recept.datum
-            self.__lbo_labela["text"] = recept.kolicina
+        Podaci.sacuvaj(self.__podaciUcitaj)
 
-            self.listapacijenata.delete(indeks)
-            self.listapacijenata.insert(indeks, "  " + pacijent_izmena.prezime + " \t \t \t " + pacijent_izmena.ime)
-            self.listapacijenata.selection_set(indeks)
+        self.__jmbg_labela["text"] = recept.Pacijent
+        self.__ime_labela["text"] = recept.Lek
+        self.__prezime_labela["text"] = recept.Lekar
+        self.__datum_labela["text"] = recept.datum
+        self.__lbo_labela["text"] = recept.kolicina
 
-            self.b_prihvati_izmenu['state'] = DISABLED
+        self.listapacijenata.delete(indeks)
+        self.listapacijenata.insert(indeks, "  " + pacijent_izmena.prezime + " \t \t \t " + pacijent_izmena.ime)
+        self.listapacijenata.selection_set(indeks)
 
-            self.__pacijentTxt.set("")
-            self.__imeTxt.set("")
-            self.__prezimeTxt.set("")
-            self.__kolicinaInt.set("")
+        self.b_prihvati_izmenu['state'] = DISABLED
 
-        def ocisti_labele(self):
-            self.__jmbg_labela['text'] = ""
-            self.__ime_labela['text'] = ""
-            self.__prezime_labela['text'] = ""
-            self.__datum_labela['text'] = ""
-            self.__lbo_labela['text'] = ""
-            self.__izvestaj_labela['text'] = ""
-            self.e_pacijent.config(state="normal")
-            self.e_kolicina.config(state="normal")
+        self.__pacijentTxt.set("")
+        self.__imeTxt.set("")
+        self.__prezimeTxt.set("")
+        self.__kolicinaInt.set("")
 
-        def izbrisi_komanda(self):
-            
-            if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati recept",
-                                           icon='warning') == "no":
-                return
+    def ocisti_labele(self):
+        self.__jmbg_labela['text'] = ""
+        self.__ime_labela['text'] = ""
+        self.__prezime_labela['text'] = ""
+        self.__datum_labela['text'] = ""
+        self.__lbo_labela['text'] = ""
+        self.__izvestaj_labela['text'] = ""
+        self.e_pacijent.config(state="normal")
+        self.e_kolicina.config(state="normal")
 
-            pacijent_izmena = self.listapacijenata.curselection()[0]
-            self.__podaciUcitaj.obrisi_recept(pacijent_izmena)
+    def izbrisi_komanda(self):
 
-            Podaci.sacuvaj(self.__podaciUcitaj)
+        if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati recept",
+                                       icon='warning') == "no":
+            return
 
-            self.listapacijenata.delete(pacijent_izmena)
-            self.listapacijenata.selection_set(pacijent_izmena)
+        pacijent_izmena = self.listapacijenata.curselection()[0]
+        self.__podaciUcitaj.obrisi_recept(pacijent_izmena)
 
-        def popuni_labele(self, recept):
-            self.__jmbg_labela["text"] = recept.pacijent
-            self.__ime_labela["text"] = recept.Lek
-            self.__prezime_labela["text"] = recept.Lekar
-            self.__datum_labela["text"] = recept.datum
-            self.__lbo_labela["text"] = str(recept.kolicina)
-            self.__izvestaj_labela['text'] = recept.izvestaj
+        Podaci.sacuvaj(self.__podaciUcitaj)
 
-        def promena_selekcije_u_listbox(self, event=None):
-            if not self.listapacijenata.curselection():
-                self.ocisti_labele()
-                return
+        self.listapacijenata.delete(pacijent_izmena)
+        self.listapacijenata.selection_set(pacijent_izmena)
 
-            indeks = self.listapacijenata.curselection()[0]
-            pacijent = self.__podaciUcitaj.recepti[indeks]
-            self.popuni_labele(pacijent)
+    def popuni_labele(self, recept):
+        self.__jmbg_labela["text"] = recept.Pacijent
+        self.__ime_labela["text"] = recept.Lek
+        self.__prezime_labela["text"] = recept.Lekar
+        self.__datum_labela["text"] = recept.datum
+        self.__lbo_labela["text"] = str(recept.kolicina)
+        self.__izvestaj_labela['text'] = recept.izvestaj
 
-        def popuni_listbox(self, recepti):
-            self.listapacijenata.delete(0, END)
-            for recept in recepti:
-                self.listapacijenata.insert(END, "  " + recept.pacijent + " | " + recept.Lek)
+    def promena_selekcije_u_listbox(self, event=None):
+        if not self.listapacijenata.curselection():
+            self.ocisti_labele()
+            return
+
+        indeks = self.listapacijenata.curselection()[0]
+        pacijent = self.__podaciUcitaj.recepti[indeks]
+        self.popuni_labele(pacijent)
+
+    def popuni_listbox(self, recepti):
+        self.listapacijenata.delete(0, END)
+        for recept in recepti:
+            self.listapacijenata.insert(END, "  " + recept.Pacijent + " | " + recept.Lek)
 
 
 if __name__ == '__main__':

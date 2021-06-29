@@ -7,7 +7,7 @@ import uuid
 class Recept():
 
     @property
-    def pacijent(self):
+    def Pacijent(self):
         return self.__pacijent
 
     @property
@@ -34,11 +34,11 @@ class Recept():
         return pacijent in self.__pacijent
 
 
-    def __init__(self,pacijent, lek, lekar, datum, kolicina):
-        self.__pacijent = pacijent
+    def __init__(self,Pacijent, Lek, Lekar, datum, kolicina):
+        self.__pacijent = Pacijent
         self.__datum = datum
-        self.__lekar = lekar
-        self.__lek = lek
+        self.__lekar = Lekar
+        self.__lek = Lek
         self.__izvestaj = uuid.uuid4()
         self.__kolicina = kolicina
 
