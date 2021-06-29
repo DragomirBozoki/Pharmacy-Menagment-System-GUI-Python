@@ -503,10 +503,10 @@ class PacijentWindow():
         pacijent = pacijenti[indeks]
 
 
-        list = []
+        lista = []
         for recept in self.__podaciUcitaj.recepti:
             if pacijent.ime in recept.Pacijent and pacijent.prezime in recept.Pacijent:
-                list.append(recept)
+                lista.append(recept)
 
         recept_pacijent_prozor = Toplevel(self.master)
         recept_pacijent_prozor.title("Recepti")
@@ -526,8 +526,8 @@ class PacijentWindow():
         self.__lek = Label(label_frame)
 
         Label(label_frame, text="Pacijent").grid(row=0, column=2, sticky=E)
-        Label(label_frame, text="Lek").grid(row=1, column=2, sticky=E)
-        Label(label_frame, text="Lekar").grid(row=2, column=2, sticky=E)
+        Label(label_frame, text="Lekar").grid(row=1, column=2, sticky=E)
+        Label(label_frame, text="Lek").grid(row=2, column=2, sticky=E)
         Label(label_frame, text="Datum:").grid(row=3, column=2, sticky=E)
         Label(label_frame, text="Kolicina").grid(row=4, column=2, sticky=E)
         Label(label_frame, text="Izvestaj").grid(row=5, column=2, sticky=E)
@@ -539,10 +539,9 @@ class PacijentWindow():
         self.__kolicina.grid(row=4, column=3, sticky=W)
         self.__izvestaj.grid(row=5, column=3, sticky=W)
 
-        for recept in list:
+        for recept in lista:
 
-            self.__listarecepti.insert(END, " "  +recept.Lekar + " " + recept.Lek)
-
+            self.__listarecepti.insert(END, " "  +recept.Lekar + "   |   " + recept.Lek)
 
     def popuni_recepti(self, recept):
         self.__pacijent['text'] = recept.Pacijent
@@ -557,10 +556,10 @@ class PacijentWindow():
             self.ocisti_labele()
             return
 
-
         indeks = self.listapacijenata.curselection()[0]
         recept = self.__podaciUcitaj.recepti[indeks]
         self.popuni_recepti(recept)
+
 class DoctorWindow:
 
 
