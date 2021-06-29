@@ -239,11 +239,13 @@ class PacijentWindow():
         self.__lbo_labela.grid(row=4, column=1)
 
 
-        self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
-        self.popuni_proizvodi_listbox(self.__podaciUcitaj.pacijenti)
+
+        self.popuni_listbox(self.__podaciUcitaj.pacijenti)
 
         self.e_sorter.bind("<KeyRelease>", self.check)
+
+        self.listapacijenata.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
 
    # ===============Functions=======================
 
@@ -261,8 +263,7 @@ class PacijentWindow():
                 if typed.lower() in  pacijent.prezime.lower() or typed.lower() in pacijent.ime.lower():
                     data.append(pacijent)
                     #=========#
-
-        self.popuni_proizvodi_listbox(data)
+        self.popuni_listbox(data)
 
     def clear(self):
         self.__jmbgTxt.set("")
@@ -281,12 +282,14 @@ class PacijentWindow():
 
     def accept(self):
 
-        duzina = self.__jmbgTxt.get()
+        pacijenti = self.__podaciUcitaj.pacijenti
+
+        jmbg = self.__jmbgTxt.get()
         duzina1 = self.__imeTxt.get()
         duzina2 = self.__prezimeTxt.get()
-        duzina3 = self.__lboTxt.get()
+        lbo = self.__lboTxt.get()
 
-        if len(duzina) != 13 or not duzina.isdigit():
+        if len(jmbg) != 13 or not jmbg.isdigit():
             tkinter.messagebox.showwarning("Greska", "JMBG mora  biti broj i imati 13 karaktera!")
             return
 
@@ -298,11 +301,21 @@ class PacijentWindow():
             tkinter.messagebox.showwarning("Greska", "Prezime mora imati bar 2 karaktera i ne imati brojeve!")
             return
 
-        if len(duzina3) != 7 or not duzina3.isdigit():
+        if len(lbo) != 7 or not lbo.isdigit():
             tkinter.messagebox.showwarning("Greska", "LBO mora imati 7 cifara")
             return
 
         else:
+             for pacijent in pacijenti:
+                 if pacijent.jmbg == jmbg:
+                     tkinter.messagebox.showwarning("Greska", "Osoba sa ovim JMBG-om vec postoji!")
+                     return
+
+             for pacijent in pacijenti:
+                 if pacijent.jmbg == lbo:
+                     tkinter.messagebox.showwarning("Greska", "Osoba sa ovim LBO-om vec postoji!")
+                     return
+
              pacijent = Pacijent(self.__jmbgTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(),self.__datumTxt.get(), self.__lboTxt.get())
              self.listapacijenata.insert(END,  "  "+ pacijent.prezime +"  " + pacijent.ime)
 
@@ -459,7 +472,7 @@ class PacijentWindow():
         pacijent = self.__podaciUcitaj.pacijenti[indeks]
         self.popuni_labele(pacijent)
 
-    def popuni_proizvodi_listbox(self, pacijenti):
+    def popuni_listbox(self, pacijenti):
         format_linije = "{:10} | {:13}"
         self.listapacijenata.delete(0, END)
         for pacijent in pacijenti:
@@ -639,12 +652,13 @@ class DoctorWindow:
 
     def accept(self):
 
-        duzina = self.__jmbgTxt.get()
+        lekari = self.__podaciUcitaj.lekari
+        jmbg = self.__jmbgTxt.get()
         duzina1 = self.__imeTxt.get()
         duzina2 = self.__prezimeTxt.get()
         duzina3 = self.__specijalizacijaTxt.get()
 
-        if len(duzina) != 13 or not duzina.isdigit():
+        if len(jmbg) != 13 or not jmbg.isdigit():
             tkinter.messagebox.showwarning("Greska", "JMBG mora  biti broj i imati 13 karaktera!")
             return
 
@@ -661,6 +675,14 @@ class DoctorWindow:
             return
 
         else:
+
+            for lekar in lekari:
+                if lekar.jmbg == jmbg:
+                    tkinter.messagebox.showwarning("Greska", "Osoba sa ovim JMBG-om vec postoji!")
+                    return
+
+
+
             lekar = Lekar(self.__jmbgTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(),
                                 self.__datumTxt.get(), self.__specijalizacijaTxt.get())
             self.listalekara.insert(END, "  " + lekar.prezime + "  " + lekar.ime)
@@ -980,12 +1002,13 @@ class LekWindow:
 
     def accept(self):
 
-        duzina = self.__jklTxt.get()
+        lekovi = self.__podaciUcitaj.lekovi
+        jkl = self.__jklTxt.get()
         duzina1 = self.__nazivTxt.get()
         duzina2 = self.__proizvodjacTxt.get()
         duzina3 = self.__tiplekaTxt.get()
 
-        if len(duzina) != 7 or not duzina.isdigit():
+        if len(jkl) != 7 or not jkl.isdigit():
             tkinter.messagebox.showwarning("Greska", "JKL mora  biti broj i imati 7 karaktera!")
             return
 
@@ -1002,6 +1025,10 @@ class LekWindow:
             return
 
         else:
+            for lek in lekovi:
+                if lek.jkl == jkl:
+                    tkinter.messagebox.showwarning("Greska", "Uneti JKL je vec u upotrebi!")
+
             lek = Lek(self.__jklTxt.get(), self.__nazivTxt.get(), self.__proizvodjacTxt.get(),
                                 self.__tiplekaTxt.get())
             self.listalek.insert(END, "  " + lek.proizvodjac + " | " + lek.naziv)
@@ -1016,7 +1043,7 @@ class LekWindow:
             self.__tiplekaTxt.set("")
 
 
-
+            print("=================")
             print(lek)
 
     def izmeni_lek(self):
