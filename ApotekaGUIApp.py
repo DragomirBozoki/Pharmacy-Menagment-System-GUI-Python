@@ -330,7 +330,7 @@ class PacijentWindow():
                      return
 
              pacijent = Pacijent(self.__jmbgTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(),self.__datumTxt.get(), self.__lboTxt.get())
-             self.listapacijenata.insert(END,  "  "+ pacijent.prezime +"  " + pacijent.ime)
+             self.listapacijenata.insert(END,  " * "+ pacijent.prezime +" | " + pacijent.ime)
 
              self.__podaciUcitaj.pacijenti.append(pacijent)
 
@@ -491,6 +491,7 @@ class PacijentWindow():
         for pacijent in pacijenti:
             self.listapacijenata.insert(END,  " - "+ format_linije.format(pacijent.prezime, pacijent.ime))
 
+
     def prikazi_recepte(self):
         if not self.listapacijenata.curselection():
             tkinter.messagebox.showwarning("Greska", "Niste selektovali pacijenta")
@@ -504,20 +505,18 @@ class PacijentWindow():
 
         list = []
         for recept in self.__podaciUcitaj.recepti:
-            if pacijent == recept.Pacijent:
+            if pacijent.ime in recept.Pacijent and pacijent.prezime in recept.Pacijent:
                 list.append(recept)
-
-
 
         recept_pacijent_prozor = Toplevel(self.master)
         recept_pacijent_prozor.title("Recepti")
 
-        self.__listarecepti = Listbox(recept_pacijent_prozor,width = 50, activestyle = "none", exportselection = False)
+        self.__listarecepti = Listbox(recept_pacijent_prozor, width=50, activestyle="none", exportselection=False)
         self.__listarecepti.pack(side=LEFT, fill=BOTH, expand=1)
-        self.__listarecepti.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox)
+        self.__listarecepti.bind("<<ListboxSelect>>", self.promena_selekcije_u_listbox_recepti)
 
-        label_frame = Frame(recept_pacijent_prozor, bd = 5, relief = "ridge", padx = 10, pady = 5)
-        label_frame.pack(side = RIGHT, fill=BOTH, expand = 1)
+        label_frame = Frame(recept_pacijent_prozor, bd=5, relief="ridge", padx=10, pady=5)
+        label_frame.pack(side=RIGHT, fill=BOTH, expand=1)
 
         self.__datum = Label(label_frame)
         self.__izvestaj = Label(label_frame)
@@ -526,37 +525,42 @@ class PacijentWindow():
         self.__lekar = Label(label_frame)
         self.__lek = Label(label_frame)
 
-        Label(label_frame, text = "Pacijent").grid(row = 0, column =2, sticky =E)
+        Label(label_frame, text="Pacijent").grid(row=0, column=2, sticky=E)
         Label(label_frame, text="Lek").grid(row=1, column=2, sticky=E)
         Label(label_frame, text="Lekar").grid(row=2, column=2, sticky=E)
         Label(label_frame, text="Datum:").grid(row=3, column=2, sticky=E)
         Label(label_frame, text="Kolicina").grid(row=4, column=2, sticky=E)
         Label(label_frame, text="Izvestaj").grid(row=5, column=2, sticky=E)
 
-        self.__pacijent.grid(row = 0, column =3 , sticky = W)
+        self.__pacijent.grid(row=0, column=3, sticky=W)
         self.__lekar.grid(row=1, column=3, sticky=W)
         self.__lek.grid(row=2, column=3, sticky=W)
         self.__datum.grid(row=3, column=3, sticky=W)
         self.__kolicina.grid(row=4, column=3, sticky=W)
         self.__izvestaj.grid(row=5, column=3, sticky=W)
 
-
-
         for recept in list:
 
-            self.__listarecepti.insert(END, recept.Pacijent + "  " + recept.Lek)
-            self.__pacijent["text"] = recept.Pacijent
-            self.__lekar["text"] = recept.Lek
-            self.__lek["text"] = recept.Lekar
-            self.__datum["text"] = recept.datum
-            self.__izvestaj['text'] = recept.izvestaj
-
-        print(list)
+            self.__listarecepti.insert(END, " "  +recept.Lekar + " " + recept.Lek)
 
 
+    def popuni_recepti(self, recept):
+        self.__pacijent['text'] = recept.Pacijent
+        self.__lekar['text'] = recept.Lekar
+        self.__lek['text'] = recept.Lek
+        self.__datum['text'] = recept.datum
+        self.__kolicina['text'] = recept.kolicina
+        self.__izvestaj['text'] = recept.izvestaj
+
+    def promena_selekcije_u_listbox_recepti(self, event=None):
+        if not self.listapacijenata.curselection():
+            self.ocisti_labele()
+            return
 
 
-
+        indeks = self.listapacijenata.curselection()[0]
+        recept = self.__podaciUcitaj.recepti[indeks]
+        self.popuni_recepti(recept)
 class DoctorWindow:
 
 
@@ -712,6 +716,12 @@ class DoctorWindow:
                     data.append(lekar)
 
         self.popuni_listbox(data)
+        self.listalekara.selection_clear(0, END)
+        self.listalekara.selection_set(END)
+
+        indeks = self.listalekara.curselection()[0]
+        pacijent = data[indeks]
+        self.popuni_labele(pacijent)
 
     def clear(self):
         self.__jmbgTxt.set("")
@@ -763,7 +773,7 @@ class DoctorWindow:
 
             lekar = Lekar(self.__jmbgTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(),
                                 self.__datumTxt.get(), self.__specijalizacijaTxt.get())
-            self.listalekara.insert(END, "  " + lekar.prezime + "  " + lekar.ime)
+            self.listalekara.insert(END, " * " + lekar.prezime + "  " + lekar.ime)
 
             self.__podaciUcitaj.lekari.append(lekar)
 
@@ -1063,6 +1073,12 @@ class LekWindow:
                     data.append(lek)
 
         self.popuni_listbox(data)
+        self.listalek.selection_clear(0, END)
+        self.listalek.selection_set(END)
+
+        indeks = self.listalek.curselection()[0]
+        pacijent = data[indeks]
+        self.popuni_labele(pacijent)
 
     def clear(self):
         self.__jklTxt.set("")
