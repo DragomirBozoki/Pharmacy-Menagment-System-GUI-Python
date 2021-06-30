@@ -122,10 +122,6 @@ class PacijentWindow():
         self.__podaci = Podaci()
         self.__podaciUcitaj = Podaci.ucitaj()
 
-
-
-
-
 #=================Frames==========================
 
         pacijentFrame = Frame(self.master, bd = 4, relief = "groove", bg = "whitesmoke")
@@ -154,8 +150,6 @@ class PacijentWindow():
         self.scrollbar.pack(side=RIGHT, fill=Y)
 
         self.listapacijenata.pack()
-
-
 
         #====================LABEL===============================
 
@@ -248,7 +242,14 @@ class PacijentWindow():
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
+        moj_meni = Menu(master)
+        master.config(menu=moj_meni)
 
+        file_meni = Menu(moj_meni)
+        moj_meni.add_cascade(label="File", menu=file_meni)
+        file_meni.add_command(label="Accept", command=self.accept)
+        file_meni.add_command(label="Izmeni/Obrisi", command=self.izmeni_pacijenta)
+        file_meni.add_command(label="Reset", command=self.clear)
 
    # ===============Functions=======================
 
@@ -325,7 +326,7 @@ class PacijentWindow():
                      return
 
              for pacijent in pacijenti:
-                 if pacijent.jmbg == lbo:
+                 if pacijent.lbo == lbo:
                      tkinter.messagebox.showwarning("Greska", "Osoba sa ovim LBO-om vec postoji!")
                      return
 
@@ -340,9 +341,6 @@ class PacijentWindow():
              self.__imeTxt.set("")
              self.__prezimeTxt.set("")
              self.__lboTxt.set("")
-
-
-
 
              print("=================")
              print(pacijent)
@@ -367,11 +365,7 @@ class PacijentWindow():
             self.__datumTxt.set(pacijent.datum)
             self.__lboTxt.set(pacijent.lbo)
 
-
-
     def prihvati_izmenu(self):
-
-
 
              ime = self.__imeTxt.get()
              prezime = self.__prezimeTxt.get()
@@ -413,7 +407,6 @@ class PacijentWindow():
              self.listapacijenata.insert(indeks, " - " + pacijent_izmena.prezime + " |  " + pacijent_izmena.ime)
              self.listapacijenata.selection_set(indeks)
 
-
              Podaci.sacuvaj(self.__podaciUcitaj)
 
              self.__jmbg_labela["text"] = pacijent.jmbg
@@ -421,9 +414,6 @@ class PacijentWindow():
              self.__prezime_labela["text"] = pacijent.prezime
              self.__datum_labela["text"] = pacijent.datum
              self.__lbo_labela["text"] = pacijent.lbo
-
-
-
 
              self.b_prihvati_izmenu['state'] = DISABLED
              self.b_obrisi.config(state=DISABLED)
@@ -436,8 +426,8 @@ class PacijentWindow():
              self.__prezimeTxt.set("")
              self.__lboTxt.set("")
 
-
     def ocisti_labele(self):
+
         self.__jmbg_labela['text'] = ""
         self.__ime_labela['text'] = ""
         self.__prezime_labela['text'] = ""
@@ -450,23 +440,16 @@ class PacijentWindow():
 
         jmbg = self.__jmbgTxt.get()
 
-
         if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati pacijenta", icon = 'warning') == "no":
             return
 
-
         pacijent_izmena = self.listapacijenata.curselection()[0]
         self.__podaciUcitaj.obrisi_pacijenta(pacijent_izmena)
-
-
-
 
         Podaci.sacuvaj(self.__podaciUcitaj)
 
         self.listapacijenata.delete(pacijent_izmena)
         self.listapacijenata.selection_set(pacijent_izmena)
-
-
 
     def popuni_labele(self, pacijent):
         self.__jmbg_labela["text"] = pacijent.jmbg
@@ -480,7 +463,6 @@ class PacijentWindow():
             self.ocisti_labele()
             return
 
-
         indeks = self.listapacijenata.curselection()[0]
         pacijent = self.__podaciUcitaj.pacijenti[indeks]
         self.popuni_labele(pacijent)
@@ -491,17 +473,14 @@ class PacijentWindow():
         for pacijent in pacijenti:
             self.listapacijenata.insert(END,  " - "+ format_linije.format(pacijent.prezime, pacijent.ime))
 
-
     def prikazi_recepte(self):
         if not self.listapacijenata.curselection():
             tkinter.messagebox.showwarning("Greska", "Niste selektovali pacijenta")
             return
 
-
         indeks = self.listapacijenata.curselection()[0]
         pacijenti = self.__podaciUcitaj.pacijenti
         pacijent = pacijenti[indeks]
-
 
         lista = []
         for recept in self.__podaciUcitaj.recepti:
@@ -518,19 +497,19 @@ class PacijentWindow():
         label_frame = Frame(recept_pacijent_prozor, bd=5, relief="ridge", padx=10, pady=5)
         label_frame.pack(side=RIGHT, fill=BOTH, expand=1)
 
-        self.__datum = Label(label_frame)
-        self.__izvestaj = Label(label_frame)
-        self.__kolicina = Label(label_frame)
-        self.__pacijent = Label(label_frame)
-        self.__lekar = Label(label_frame)
-        self.__lek = Label(label_frame)
+        self.__datum = Label(label_frame, bd = 5)
+        self.__izvestaj = Label(label_frame, bd = 5)
+        self.__kolicina = Label(label_frame, bd = 5)
+        self.__pacijent = Label(label_frame, bd = 5)
+        self.__lekar = Label(label_frame, bd = 5)
+        self.__lek = Label(label_frame, bd = 5)
 
-        Label(label_frame, text="Pacijent").grid(row=0, column=2, sticky=E)
-        Label(label_frame, text="Lekar").grid(row=1, column=2, sticky=E)
-        Label(label_frame, text="Lek").grid(row=2, column=2, sticky=E)
+        Label(label_frame, text="Pacijent:").grid(row=0, column=2, sticky=E)
+        Label(label_frame, text="Lekar:").grid(row=1, column=2, sticky=E)
+        Label(label_frame, text="Lek:").grid(row=2, column=2, sticky=E)
         Label(label_frame, text="Datum:").grid(row=3, column=2, sticky=E)
-        Label(label_frame, text="Kolicina").grid(row=4, column=2, sticky=E)
-        Label(label_frame, text="Izvestaj").grid(row=5, column=2, sticky=E)
+        Label(label_frame, text="Kolicina:").grid(row=4, column=2, sticky=E)
+        Label(label_frame, text="Izvestaj:").grid(row=5, column=2, sticky=E)
 
         self.__pacijent.grid(row=0, column=3, sticky=W)
         self.__lekar.grid(row=1, column=3, sticky=W)
@@ -551,13 +530,26 @@ class PacijentWindow():
         self.__kolicina['text'] = recept.kolicina
         self.__izvestaj['text'] = recept.izvestaj
 
+    def pronadji_recept(self):
+        indeks = self.listapacijenata.curselection()[0]
+        pacijenti = self.__podaciUcitaj.pacijenti
+        pacijent = pacijenti[indeks]
+
+        recepti = []
+        for recept in self.__podaciUcitaj.recepti:
+            if pacijent.ime in recept.Pacijent and pacijent.prezime in recept.Pacijent:
+                recepti.append(recept)
+
+        return recepti
     def promena_selekcije_u_listbox_recepti(self, event=None):
         if not self.listapacijenata.curselection():
             self.ocisti_labele()
             return
 
-        indeks = self.listapacijenata.curselection()[0]
-        recept = self.__podaciUcitaj.recepti[indeks]
+        indeks = self.__listarecepti.curselection()[0]
+        recepti = self.pronadji_recept()
+        self.__listarecepti.selection_set(indeks)
+        recept = recepti[indeks]
         self.popuni_recepti(recept)
 
 class DoctorWindow:
@@ -698,6 +690,15 @@ class DoctorWindow:
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
+        moj_meni = Menu(master)
+        master.config(menu=moj_meni)
+
+        file_meni = Menu(moj_meni)
+        moj_meni.add_cascade(label="File", menu=file_meni)
+        file_meni.add_command(label="Accept", command=self.accept)
+        file_meni.add_command(label="Izmeni/Obrisi", command=self.izmeni_lekara)
+        file_meni.add_command(label="Reset", command=self.clear)
+
     # ===============Functions=======================
 
     def check(self, event = None):
@@ -768,8 +769,6 @@ class DoctorWindow:
                     tkinter.messagebox.showwarning("Greska", "Osoba sa ovim JMBG-om vec postoji!")
                     return
 
-
-
             lekar = Lekar(self.__jmbgTxt.get(), self.__imeTxt.get(), self.__prezimeTxt.get(),
                                 self.__datumTxt.get(), self.__specijalizacijaTxt.get())
             self.listalekara.insert(END, " * " + lekar.prezime + "  " + lekar.ime)
@@ -805,11 +804,7 @@ class DoctorWindow:
             self.__datumTxt.set(lekar.datum)
             self.__specijalizacijaTxt.set(lekar.specijalizacija)
 
-
-
     def prihvati_izmenu(self):
-
-
 
         ime = self.__imeTxt.get()
         prezime = self.__prezimeTxt.get()
@@ -846,8 +841,6 @@ class DoctorWindow:
         lekar_izmena.datum = datum
         lekar_izmena.specijalizacija = specijalizacija
 
-
-
         indeks = self.listalekara.curselection()[0]
 
         self.listalekara.delete(indeks)
@@ -855,8 +848,6 @@ class DoctorWindow:
         self.listalekara.selection_set(indeks)
 
         Podaci.sacuvaj(self.__podaciUcitaj)
-
-
 
         self.__jmbg_labela["text"] = lekar.jmbg
         self.__ime_labela["text"] = lekar.ime
@@ -868,8 +859,6 @@ class DoctorWindow:
         self.b_obrisi.config(state=DISABLED)
         self.e_jmbg.config(state=NORMAL)
         self.b_accept.config(state=NORMAL)
-
-
 
         self.b_prihvati_izmenu['state'] = DISABLED
 
@@ -886,7 +875,6 @@ class DoctorWindow:
         self.__lbo_labela['text'] = ""
         self.e_jmbg.config(state="normal")
         self.e_specijalizacija.config(state="normal")
-
 
     def izbrisi_komanda(self):
             jmbg = self.__jmbgTxt.get()
@@ -1055,6 +1043,15 @@ class LekWindow:
 
         self.e_sorter.bind("<KeyRelease>", self.check)
 
+        moj_meni = Menu(master)
+        master.config(menu=moj_meni)
+
+        file_meni = Menu(moj_meni)
+        moj_meni.add_cascade(label="File", menu=file_meni)
+        file_meni.add_command(label="Accept", command=self.accept)
+        file_meni.add_command(label="Izmeni/Obrisi", command=self.izmeni_lek)
+        file_meni.add_command(label="Reset", command=self.clear)
+
     # ===============Functions=======================
 
     def check(self, event=None):
@@ -1135,7 +1132,6 @@ class LekWindow:
             self.__proizvodjacTxt.set("")
             self.__tiplekaTxt.set("")
 
-
             print("=================")
             print(lek)
 
@@ -1156,15 +1152,12 @@ class LekWindow:
             self.__proizvodjacTxt.set(lek.proizvodjac)
             self.__tiplekaTxt.set(lek.tip_leka)
 
-
     def prihvati_izmenu(self):
 
         jkl = self.__jklTxt.get()
         naziv = self.__nazivTxt.get()
         proizvodjac = self.__proizvodjacTxt.get()
         tip_leka = self.__tiplekaTxt.get()
-
-
 
         if len(naziv) < 2 or naziv.isdigit():
             tkinter.messagebox.showwarning("Greska", "Naziv leka mora imati bar 2 karaktera i ne imati brojeve!")
@@ -1229,8 +1222,6 @@ class LekWindow:
 
         if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati lek", icon='warning') == "no":
             return
-
-
 
         lek_izmena = self.listalek.curselection()[0]
         self.__podaciUcitaj.obrisi_lek(lek_izmena)
@@ -1597,7 +1588,6 @@ class ReceptWindow():
         self.listapacijenata.delete(0, END)
         for recept in recepti:
             self.listapacijenata.insert(END, "  " + recept.Pacijent + " | " + recept.Lek)
-
 
 if __name__ == '__main__':
     main()
