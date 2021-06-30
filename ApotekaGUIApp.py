@@ -554,7 +554,6 @@ class PacijentWindow():
 
 class DoctorWindow:
 
-
     def __init__(self, master, Podaci):
         self.master = master
         self.master.title("Doctors Menagment System")
@@ -960,8 +959,7 @@ class LekWindow:
 
         self.listalek.pack()
 
-
-        # ====================LABEL===============================
+     # ====================LABEL===============================
 
         l_jmbg = Label(pacijentFrame, text="JKL: ", font=("arial", 10, "bold"))
         l_jmbg.grid(row=1, column=0, pady=5, padx=10, sticky="W")
@@ -986,7 +984,6 @@ class LekWindow:
 
         self.e_tipLeka = Entry(pacijentFrame, textvariable=self.__tiplekaTxt, bd=5, font=("arial", 12, "bold"), width = 30)
         self.e_tipLeka.grid(row=4, column=1, pady=5, padx=10, sticky="E")
-
 
         b_clear = Button(pacijentFrame, text="Reset", font=("arial", 10, "bold"), command=self.clear)
         b_clear.grid(row=7, column=0, pady=0, padx=10)
@@ -1017,9 +1014,6 @@ class LekWindow:
 
         datum_pLabel = Label(prikazFrame, text="Tip Leka: ", font=("arial", 10, "bold"))
         datum_pLabel.grid(row=3, column=0, sticky="E")
-
-
-
 
         self.__jkl_labela = Label(prikazFrame, font=("arial", 12, "bold"))
         self.__jkl_labela.grid(row=0, column=1, sticky = "W")
