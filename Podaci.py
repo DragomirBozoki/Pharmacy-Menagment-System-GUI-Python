@@ -30,6 +30,8 @@ class Podaci:
     def obrisi_pacijenta(self, indeks):
         self.__pacijenti.pop(indeks)
 
+
+
     def obrisi_lekara(self, indeks):
         self.__lekari.pop(indeks)
 

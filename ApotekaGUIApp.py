@@ -361,6 +361,8 @@ class PacijentWindow():
 
     def prihvati_izmenu(self):
 
+
+
              ime = self.__imeTxt.get()
              prezime = self.__prezimeTxt.get()
              datum = self.__datumTxt.get()
@@ -432,14 +434,26 @@ class PacijentWindow():
 
     def izbrisi_komanda(self):
 
-        jmbg = self.__jmbgTxt.get()
+   #     indeks = self.listapacijenata.curselection()[0]
+   #     pacijenti = self.__podaciUcitaj.pacijenti
+   #     pacijent = pacijenti[indeks]
 
+        jmbg = self.__jmbgTxt.get()
+        self.__recepti = self.__podaciUcitaj.recepti
         if tkinter.messagebox.askyesno("Upozorenje", "Ovom komandom cete obrisati pacijenta", icon = 'warning') == "no":
             return
 
-        pacijent_izmena = self.listapacijenata.curselection()[0]
-        self.__podaciUcitaj.obrisi_pacijenta(pacijent_izmena)
+        pacijent_izmena  = self.listapacijenata.curselection()[0]
 
+
+    #    recept_brisanje = []
+    #    for recept in self.__recepti:
+    #        if pacijent_izmena.ime in Recept.Pacijent and pacijent_izmena.prezime in Recept.Pacijent:
+    #            recept_brisanje.append(recept)
+    #        for racun in recept_brisanje:
+    #            self.__recepti.remove(racun)
+
+        self.__podaciUcitaj.obrisi_pacijenta(pacijent_izmena)
         Podaci.sacuvaj(self.__podaciUcitaj)
 
         self.listapacijenata.delete(pacijent_izmena)
@@ -1596,7 +1610,7 @@ class ReceptWindow():
         self.b_obrisi.config(state=DISABLED)
         self.b_accept.config(state=NORMAL)
 
-        self.e_pacijent.config(state=NORMAL)
+        self.e_pacijent['state'] = NORMAL
 
 
     def accept(self):
@@ -1658,6 +1672,7 @@ class ReceptWindow():
         datum = self.__datumTxt.get()
         kolicina = self.__kolicinaInt.get()
         pacijent_izmena = self.__recept_trenutni
+        recepti = self.__podaciUcitaj.recepti
 
         if pacijent == "" or lekar  == "" or lek == "":
             tkinter.messagebox.showwarning("Greska", "Uneli ste prazno polje")
@@ -1667,10 +1682,15 @@ class ReceptWindow():
             tkinter.messagebox.showwarning("Greska", "Kolicina mora biti veca od 0")
             return
 
+        for recept in recepti:
+            if recept.Pacijent == pacijent:
+                pacijent_izmena = recept
+                break
 
-        pacijent_izmena.pacijent = pacijent
-        pacijent_izmena.lekar = lekar
-        pacijent_izmena.lek = lek
+        pacijent_izmena.Pacijent = pacijent
+        pacijent_izmena.Lek = lek
+        pacijent_izmena.Lekar = lekar
+        pacijent_izmena.kolicina = kolicina
 
 
 
@@ -1713,7 +1733,7 @@ class ReceptWindow():
         self.__b_ok = Button(self.__unos_f, text= "Izmeni", command = self.ok_komanda)
         self.__b_ok.grid(row = 6, column = 1)
 
-        self.e_pacijent = Combobox(self.__unos_f, textvariable=self.__pacijentTxt)
+        self.e_pacijent = Combobox(self.__unos_f, textvariable=self.__pacijentTxt, state= DISABLED)
         self.e_pacijent.grid(row=0, column=1, pady=5, padx=10, sticky="E")
 
         pacijenticombo = list()
@@ -1742,7 +1762,6 @@ class ReceptWindow():
 
         self.e_kolicina = Entry(self.__unos_f, textvariable = self.__kolicinaInt)
         self.e_kolicina.grid(row = 4, column = 1)
-
 
 
     def ocisti_labele(self):

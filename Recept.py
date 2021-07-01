@@ -10,6 +10,11 @@ class Recept():
     def Pacijent(self):
         return self.__pacijent
 
+    @Pacijent.setter
+    def Pacijent(self, pacijent):
+         self.__pacijent = pacijent
+
+
     @property
     def datum(self):
         return self.__datum
@@ -18,9 +23,17 @@ class Recept():
     def Lekar(self):
         return self.__lekar
 
+    @Lekar.setter
+    def Lekar(self, lekar):
+        self.__lekar = lekar
+
     @property
     def Lek(self):
         return self.__lek
+
+    @Lek.setter
+    def Lek(self, lek):
+        self.__lek = lek
 
     @property
     def izvestaj(self):
@@ -29,6 +42,10 @@ class Recept():
     @property
     def kolicina(self):
         return self.__kolicina
+
+    @kolicina.setter
+    def kolicina(self, kolicina):
+        self.__kolicina = kolicina
 
     def sadrzi(self, pacijent):
         return pacijent in self.__pacijent
