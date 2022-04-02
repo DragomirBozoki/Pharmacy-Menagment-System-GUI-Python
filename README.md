@@ -1,2 +1,2 @@
 # ORIOP Projekat Dragomir Bozoki
- BI55/2020
+Pharmacy Menagment System
